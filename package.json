@@ -1,0 +1,19 @@
+{
+  "name": "modbus",
+  "version": "1.0.0",
+  "description": "modbus master",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js",
+    "auto": "nodemon ./index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "net": "^1.0.2",
+    "nodemon": "^3.1.4"
+  }
+}
