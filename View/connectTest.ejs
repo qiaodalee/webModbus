@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect test</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+    <script>
+        function test() {
+            console.log(document.getElementById("hostInput").value);
+            $.post({
+                url: '../api/connectTest',
+                contentType: 'application/json',
+                data: JSON.stringify({ host: document.getElementById('hostInput').value }),
+                    success: function(data) {
+                        console.log('Data received:', data);
+                        document.getElementById('res').innerHTML = data;
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+            });
+        }
+    </script>
+
+    <p>Host: <input type="text" id="hostInput" value=""></p>
+    <input type="button" value="Submit" onclick="test()">
+    <div id="res"></div>
+
+</body>
+
+</html>

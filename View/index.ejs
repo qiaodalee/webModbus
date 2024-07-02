@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <script>
+        // 1000 milliseconds = 1 second
+        const interval = 6000;
+        
+        $(document).ready(function() {
+            function getModbus() {
+                $.get('../api/getModbus', function(res) {
+                    document.getElementById('modbus').innerHTML = res;
+                });
+            }
+
+            getModbus();
+            setInterval(getModbus, interval); 
+        });
+
+        function setModbus(host, startAddr, len, code, data){
+            console.log('123');
+            let buffer = {};
+            buffer['host'] = host;
+            buffer['startAddr'] = startAddr;
+            buffer['len'] = len;
+            buffer['functioncode'] = code;
+            if ( data) buffer['data'] = [0xFF,0x00];
+            else buffer['data'] = [0x00,0x00];
+
+            $.post({
+                url: '../api/setModbus',
+                contentType: 'application/json',
+                data: JSON.stringify(buffer),
+                    success: function(data) {
+                        console.log('Data received:', data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+            });
+        }
+
+    </script>
+    <table>
+        <thead>
+            <tr>
+                <td>host</td>
+                <td>isConnect</td>
+                <td>maintenance</td>
+                <td>power</td>
+            </tr>
+        </thead>
+        <tbody id="modbus">
+
+        </tbody>
+    </table>
+</body>
+</html>
