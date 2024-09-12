@@ -5,25 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/index.css">
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
 <body>
     <script>
         // 1000 milliseconds = 1 second
-        const interval = 6000;
-        
-        $(document).ready(function() {
-            function getModbus() {
-                $.get('../api/getModbus', function(res) {
-                    document.getElementById('modbus').innerHTML = res;
-                });
-            }
+        const interval = 5000;
+        var slaves = [];
 
-            getModbus();
-            setInterval(getModbus, interval); 
-        });
+        function getSlaves() {
+            $.get('../api/getSlaves', function(res) {
+                slaves = res;
+                const modbus_table = document.getElementById("modbus");
+
+                slaves.forEach(slave => {
+                    const new_slave = document.createElement("tr");
+                    new_slave.id = slave;
+
+                    modbus_table.appendChild(new_slave);
+                });
+            });
+        }
+
+        function getModbus() {
+            slaves.forEach(slave => {
+                $.get(`../api/getModbus?host=${slave}`, function(res) {
+                    document.getElementById(slave).innerHTML = res;
+                });
+            });
+        }
 
         function setModbus(host, startAddr, len, code, data){
-            console.log('123');
             let buffer = {};
             buffer['host'] = host;
             buffer['startAddr'] = startAddr;
@@ -45,19 +58,79 @@
             });
         }
 
-    </script>
-    <table>
-        <thead>
-            <tr>
-                <td>host</td>
-                <td>isConnect</td>
-                <td>maintenance</td>
-                <td>power</td>
-            </tr>
-        </thead>
-        <tbody id="modbus">
+        function signIn(host){
+            message = 'PLC password: ';
+            passwd = prompt(message);
 
-        </tbody>
-    </table>
+            let payload = {
+                'host': host,
+                'passwd': passwd
+            };
+
+            $.post({
+                url: '../api/signIn',
+                contentType: 'application/json',
+                data: JSON.stringify(payload),
+                    success: function(data) {
+                        console.log('Data received:', data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+            });
+        }
+
+        function connectTest(){
+            
+        }
+
+        function show_menu(){
+            const menu = document.getElementById('menu');
+
+            menu.classList.toggle('show');
+        }
+
+        $(document).ready(function() {
+            getSlaves();
+
+            setTimeout( () =>{
+                document.getElementById('modbus').removeChild(document.getElementById('unready'));
+            }, 5000);
+            
+            setInterval(getModbus, interval); 
+        });
+
+    </script>
+    <div class="container">
+        <div class="menu-container">
+            <div class="menu" id="menu">
+                <img src="./img/logo.png" alt="Logo" class="logo">
+                <input type="button" class="menu-button current-page" disabled="true" value="Index" onclick="window.location.href = '../index';">
+                <input type="button" class="menu-button" value="Connection test" onclick="window.location.href = '../connectTest';">
+                <input type="button" class="menu-button" value="Log" onclick="window.location.href = '../log';">
+
+            </div>
+            <div class="menu-toggle">
+                <img src="./img/point.png" alt="Menu Toggle" onclick="show_menu()">
+            </div>
+        </div>
+        <div class="data">
+            <table>
+                <thead>
+                    <tr>
+                        <td>host</td>
+                        <td>isConnect</td>
+                        <td>maintenance</td>
+                        <td>power</td>
+                    </tr>
+                </thead>
+                <tbody id="modbus">
+                    <tr id="unready">
+                        <td>loading...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>  
+    </div>
 </body>
 </html>

@@ -9,6 +9,10 @@ router.post('/setModbus', api.setModbus);
 
 router.get('/getModbus', api.getModbus);
 
+router.get('/getSlaves', api.getSlaves);
+
+router.post('/signIn', api.signIn);
+
 router.post('/connectTest', api.connectTest);
 
 export default router;

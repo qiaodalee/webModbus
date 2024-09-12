@@ -7,7 +7,7 @@
     <title>Connect test</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <link rel="stylesheet" type="text/css" href="/css/connectTest.css">
+
 </head>
 
 <body>
@@ -35,19 +35,16 @@
             <div class="menu" id="menu">
                 <img src="./img/logo.png" alt="Logo" class="logo">
                 <input type="button" class="menu-button" value="Index" onclick="window.location.href = '../index';">
-                <input type="button" class="menu-button current-page" disabled="true" value="Connection test" onclick="window.location.href = '../connectTest';">
-                <input type="button" class="menu-button" value="Log" onclick="window.location.href = '../log';">
-
+                <input type="button" class="menu-button" value="Connection test" onclick="window.location.href = '../connectTest';">
+                <input type="button" class="menu-button current-page" value="Log" onclick="window.location.href = '../log';" disabled="true">
             </div>
             <div class="menu-toggle">
                 <img src="./img/point.png" alt="Menu Toggle" onclick="show_menu()">
             </div>
         </div>
-        <div id="userInput">
-            <p>Host: <input type="text" id="hostInput" value=""></p>
-            <input type="button" value="Submit" onclick="test()">
-        </div>
-        <div id="res"></div>
+        <!-- <p>Host: <input type="text" id="hostInput" value=""></p>
+        <input type="button" value="Submit" onclick="test()">
+        <div id="res"></div> -->
     </div>
 
 </body>

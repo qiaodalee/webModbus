@@ -1,13 +1,13 @@
 import {exec} from 'child_process';
 import Modbus from './modbusAPI/modbus.controller.js';
 
-// const Modbus = require('./modbusAPI/modbus.controller.js');
-
 const slaves = {
-    '127.0.0.1:5000': new Modbus('127.0.0.1', '5000')
+    '127.0.0.1:5000': new Modbus('127.0.0.1', '5000'),
+    '127.0.0.1:5030': new Modbus('127.0.0.1', '5030')
 }
 
 let tran = 0;
+const curr_passwd = '123456';
 
 export default {
 
@@ -32,42 +32,39 @@ export default {
     async getModbus(req, res){
         let html = '';
 
+        const host = req.query.host;
+        // res.send('');
+
         return new Promise((resolve, reject) => {
             let promises = [];
-        
-            Object.keys(slaves).forEach(slave => {
-                
-                if (slaves[slave].isConnect) {
+            let plc_access = req.cookies['plc_access'];
 
-                    // modbus_request( transaction, startAddr, len, functionCode, data)
-                    let promise = slaves[slave].modbus_request(++tran, 0, 2, 1, [])
-                        .then((recv) => {
-                            html += '<tr>';
-                            html += `<td>${slave}</td>`;
-                            html += `<td>${slaves[slave].isConnect}</td>`;
-                            html += `<td>${(recv[9] >> 1) & 1}</td>`;
-                            html += `<td>${(recv[9] >> 0) & 1}</td>`;
-                            html += `<td><input type="button" value="maintenance on/off" onclick="setModbus('${slave}', ${0x01}, ${0x01}, ${0x05}, ${!((recv[9] >> 1) & 1)})"></td>`;
-                            html += `<td><input type="button" value="power on/off" onclick="setModbus('${slave}', ${0x00}, ${0x01}, ${0x05}, ${!((recv[9] >> 0) & 1)})"></td>`;
-                            html += '</tr>';
-                        })
-                        .catch(err => {
-                            console.error('Error in modbus_request:', err);
-                            html += `<td>Error: ${err.message}</td> </tr>`;
-                        });
-        
-                    promises.push(promise);
-                }
-                else {
-                    slaves[slave] = new Modbus(slave.split(':')[0], slave.split(':')[1]);
-                    html += '<tr>';
-                    html += `<td>${slave}</td>`;
-                    html += `<td>${slaves[slave].isConnect}</td>`;
-                    html += '</tr>';
 
-                    resolve(html);
-                }
-            });
+            if (slaves[host].isConnect && plc_access != undefined && plc_access.includes(host)) {
+
+                // modbus_request( transaction, startAddr, len, functionCode, data)
+                let promise = slaves[host].modbus_request(++tran, 0, 2, 1, [])
+                    .then((recv) => {
+                        html += `<td>${host}</td>`;
+                        html += `<td>Connect</td>`;
+                        html += `<td>${(recv[9] >> 1) & 1}</td>`;
+                        html += `<td>${(recv[9] >> 0) & 1}</td>`;
+                        html += `<td><input type="button" value="maintenance on/off" onclick="setModbus('${host}', ${0x01}, ${0x01}, ${0x05}, ${!((recv[9] >> 1) & 1)})"></td>`;
+                        html += `<td><input type="button" value="power on/off" onclick="setModbus('${host}', ${0x00}, ${0x01}, ${0x05}, ${!((recv[9] >> 0) & 1)})"></td>`;
+                    })
+                    .catch(err => {
+                        console.error('Error in modbus_request:', err);
+                        html += `<td>Error: ${err.message}</td> </tr>`;
+                    });
+    
+                promises.push(promise);
+            }
+            else {
+                html += `<td>${host}</td>`;
+                html += `<td>Unconnect <input type="button" value="Sign in" onclick="signIn('${host}')"></td>`;
+
+                resolve(html);
+            }
         
             Promise.all(promises)
                 .then(() => {
@@ -80,6 +77,57 @@ export default {
         })
         .then(html => {
             res.send(html);
+        })
+        .catch(err => {
+            console.error('Unexpected error:', err);
+            res.status(500).send('Unexpected error occurred');
+        });
+    },
+
+    getSlaves(req, res){
+        let slavesData = [];
+        Object.keys(slaves).forEach(slave =>{
+            slavesData.push(slave);
+        });
+
+        res.send(slavesData);
+    },
+
+    signIn(req, res){
+        const host = req.body['host'];
+        const passwd = req.body['passwd'];
+
+        // res.clearCookie('plc_access');
+
+        let plc_access = req.cookies['plc_access'];
+        if ( plc_access == undefined){
+            plc_access = [];
+        }
+
+
+        return new Promise((resolve, reject) => {
+            // Use modbus function code ?? get PLC password 
+            // let promise = slaves[host].modbus_request(++tran, 0, 2, 1, [])
+            //     .then((plc_passwd) => {
+            //         resolve(plc_passwd);
+            //     })
+            //     .catch(err => {
+            //         console.error('Error in modbus_request:', err);
+            //         html += `<td>Error: ${err.message}</td> </tr>`;
+            //     });
+
+            resolve();
+        })
+        .then(recv => {
+            if ( recv == passwd || curr_passwd == passwd){
+                plc_access.push(host);
+                res.cookie('plc_access', plc_access, { maxAge: 24 * 60 * 60 * 1000 });
+                res.send();
+            }
+            else{
+                res.send();
+            }
+            
         })
         .catch(err => {
             console.error('Unexpected error:', err);

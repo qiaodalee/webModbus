@@ -1,0 +1,52 @@
+/* Flex item for data section */
+.data {
+  flex: 1; /* Takes up the remaining space */
+  background-color: #f7f7f7;
+  /* padding: 200px; Optional padding */
+  width: 80%;
+  height: 100%; /* Full height */
+  padding: 0 50px;
+}
+
+/* Basic Reset */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 16px;
+  text-align: left;
+}
+
+th, td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+}
+
+/* Header styling */
+th {
+  background-color: #f7f7f7; /* Green background */
+  color: white;
+  font-weight: bold;
+}
+
+/* Row styling */
+tr:nth-child(even) {
+  background-color: #dedede; /* Light gray for even rows */
+}
+
+tr:hover {
+  background-color: #c2c2c2; /* Darker gray for hover effect */
+}
+
+/* Optional: add a border around the table */
+table {
+  border: 2px solid #ddd; /* Green border */
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Optional: add a shadow effect */
+table {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+

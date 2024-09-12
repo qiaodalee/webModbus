@@ -1,0 +1,107 @@
+{
+  "HMIConfiguration": {
+    "General": {
+      "DeviceName": "Web HMI",
+      "Location": "TTU",
+      "Description": ""
+    },
+    "Network": {
+      "Ethernet": {
+        "Interface": {
+          "name": "eth0",
+          "IPAddress": "127.0.0.1",
+          "Netmask": "255.0.0.0"
+        }
+      }
+    },
+    "Protocols": {
+      "Modbus": {
+        "Mode": "TCP",
+        "Port": 502
+      }
+    },
+    "DataAcquisition": {
+      "PollingInterval": 5000,
+      "Channels": {
+        "Channel": [
+          {
+            "id": 1,
+            "Type": "Analog",
+            "Address": 40001,
+            "IPAddress": "127.0.0.1",
+            "Port": 502,
+            "Description": "",
+            "Unit": ""
+          },
+          {
+            "id": 2,
+            "Type": "Analog",
+            "Address": 40002,
+            "IPAddress": "127.0.0.1",
+            "Port": 502,
+            "Description": "",
+            "Unit": ""
+          }
+        ]
+      }
+    },
+    "Security": {
+      "Authentication": {
+        "User": [
+          {
+            "Username": "admin",
+            "Password": "admin_password",
+            "Role": "Administrator"
+          },
+          {
+            "Username": "operator",
+            "Password": "operator_password",
+            "Role": "Operator"
+          }
+        ]
+      },
+      "Encryption": {
+        "Enable": true,
+        "Type": "AES-256",
+        "Key": "your_encryption_key"
+      }
+    },
+    "Logging": {
+      "Level": "INFO",
+      "FilePath": "/var/log/rtu.log",
+      "MaxFileSize": "10MB",
+      "MaxBackupFiles": 5
+    },
+    "Alarms": {
+      "Alarm": [
+        {
+          "id": 1,
+          "Type": "",
+          "Threshold": "",
+          "Action": "Email",
+          "Email": "u10906218@ms.ttu.edu.tw"
+        }
+      ]
+    },
+    "Command": {
+      "Ping": {
+        "Enable": true,
+        "DefaultTarget": "ttu.edu.tw",
+        "Timeout": 50000
+      },
+      "Service": {
+        "Enable": true,
+        "AllowedServices": [
+          "networking",
+          "apache2",
+          "sshd",
+          "mysql"
+        ]
+      },
+      "Ssmtp": {
+        "Enable": true,
+        "Host": "matt.03144@gmail.com"
+      }
+    }
+  }
+}

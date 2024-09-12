@@ -1,0 +1,98 @@
+/* Basic reset for margins and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: black;
+    font: Arial;
+}
+.container {
+    display: flex;
+    width: 100%; /* Full width of the viewport */
+    height: 100vh; /* Full height of the viewport */
+}
+
+/* Flex container to hold the menu and data side by side */
+.menu-container {
+    width: 200px;
+    height: 100vh; /* Full height of the viewport */
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: fixed; /* Fix the menu to the left side */
+    top: 0;
+    left: 0;
+    width: 200px; /* Width of the menu */
+    height: 100%; /* Full height */
+    background-color: #00ccff;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+    transform: translateX(-100%); /* Hide menu by default */
+    transition: transform 0.3s ease;
+}
+
+.menu.show {
+    transform: translateX(0); /* Show menu when 'show' class is added */
+}
+
+.logo {
+    height: 40px;
+    margin-bottom: 20px;
+}
+
+.menu-button {
+    background-color: #00b1de;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px 0;
+    border-radius: 5px;
+    cursor: pointer;    
+    font-size: 14px;
+    width: 100%;
+}
+
+.menu-button:hover {
+    background-color: #00a1ca;
+}
+
+.current-page {
+    width: 200px;
+    margin: 5px -20px;
+    border-radius: 0px;
+}
+
+.menu-toggle {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: #00ccff;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    transition: left 0.3s ease;
+}
+
+.menu.show ~ .menu-toggle {
+    left: calc(200px + 10px); /* Adjust position when menu is open */
+}
+
+.menu-toggle img {
+    height: 30px;
+}
+
+
+/* Responsive design */
+@media (min-width: 1024px) {
+    .menu {
+        display: flex; /* Always show menu on larger screens */
+        transform: translateX(0); /* Ensure menu is visible */
+    }
+
+    .menu-toggle {
+        display: none; /* Hide menu toggle on larger screens */
+    }
+}

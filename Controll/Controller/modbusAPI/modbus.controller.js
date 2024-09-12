@@ -1,15 +1,20 @@
-// const net = require('net');
 import net from 'net';
 
 class Modbus {
     constructor(host, port) {
         this.host = host;
         this.port = port;
-        this.socket = new net.Socket();
+        this.socket = null;
         this.isConnect = false;
+        
+        this.connect();
+    }
 
-        this.socket.connect(port, host, () => {
-            console.log(`Connected to ${host}:${port}`);
+    connect(){
+        this.socket = new net.Socket();
+
+        this.socket.connect(this.port, this.host, () => {
+            console.log(`Connected to ${this.host}:${this.port}`);
             this.isConnect = true;
         });
 
@@ -23,6 +28,15 @@ class Modbus {
             this.socket.destroy();
             this.isConnect = false;
         });
+
+        return new Promise( (resolve, reject) =>{
+            resolve('true');
+        })
+    }
+
+    disconnect(){
+        this.socket.destroy();
+        this.socket = null;
     }
 
     modbus_display_msg(buffer) {

@@ -1,0 +1,8 @@
+.userInput {
+    flex: 1; /* Takes up the remaining space */
+    background-color: #f7f7f7;
+    /* padding: 200px; Optional padding */
+    width: 80%;
+    height: 100%; /* Full height */
+    padding: 0 50px;
+}
