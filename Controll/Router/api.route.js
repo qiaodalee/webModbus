@@ -15,4 +15,6 @@ router.post('/signIn', api.signIn);
 
 router.post('/connectTest', api.connectTest);
 
+router.get('/getChartData', api.getChartData);
+
 export default router;

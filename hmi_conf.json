@@ -1,5 +1,5 @@
 {
-  "HMIConfiguration": {
+  "PLCConfiguration": {
     "General": {
       "DeviceName": "Web HMI",
       "Location": "TTU",
@@ -29,7 +29,7 @@
             "Type": "Analog",
             "Address": 40001,
             "IPAddress": "127.0.0.1",
-            "Port": 502,
+            "Port": 5000,
             "Description": "",
             "Unit": ""
           },
@@ -38,7 +38,7 @@
             "Type": "Analog",
             "Address": 40002,
             "IPAddress": "127.0.0.1",
-            "Port": 502,
+            "Port": 5030,
             "Description": "",
             "Unit": ""
           }

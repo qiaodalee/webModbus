@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/index.css">
     <link rel="stylesheet" type="text/css" href="/css/style.css">
 </head>
+
 <body>
     <script>
         // 1000 milliseconds = 1 second
@@ -15,50 +18,144 @@
         var slaves = [];
 
         function getSlaves() {
-            $.get('../api/getSlaves', function(res) {
-                slaves = res;
-                const modbus_table = document.getElementById("modbus");
+            return new Promise((resolve, reject) => {
+                $.get('../api/getSlaves', function (res) {
+                    slaves = res;
+                    const modbus_table = document.getElementById("modbus");
 
-                slaves.forEach(slave => {
-                    const new_slave = document.createElement("tr");
-                    new_slave.id = slave;
+                    slaves.forEach(slave => {
+                        const new_slave = document.createElement("tr");
+                        new_slave.id = slave;
 
-                    modbus_table.appendChild(new_slave);
+                        modbus_table.appendChild(new_slave);
+                    });
+
+                    resolve();
                 });
-            });
+            })
+            
         }
 
         function getModbus() {
             slaves.forEach(slave => {
-                $.get(`../api/getModbus?host=${slave}`, function(res) {
+                $.get(`../api/getModbus?host=${slave}`, function (res) {
                     document.getElementById(slave).innerHTML = res;
                 });
             });
         }
 
-        function setModbus(host, startAddr, len, code, data){
+        function setModbus(host, startAddr, len, code, data) {
             let buffer = {};
             buffer['host'] = host;
             buffer['startAddr'] = startAddr;
             buffer['len'] = len;
             buffer['functioncode'] = code;
-            if ( data) buffer['data'] = [0xFF,0x00];
-            else buffer['data'] = [0x00,0x00];
+            if (data) buffer['data'] = [0xFF, 0x00];
+            else buffer['data'] = [0x00, 0x00];
 
             $.post({
                 url: '../api/setModbus',
                 contentType: 'application/json',
                 data: JSON.stringify(buffer),
-                    success: function(data) {
-                        console.log('Data received:', data);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', error);
-                    }
+                success: function (data) {
+                    console.log('Data received:', data);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                }
             });
         }
 
-        function signIn(host){
+
+        function timeToString( hours, minutes){
+            hours = hours < 10 ? `0${hours}` : hours;
+            minutes = minutes < 10 ? `0${minutes}` : minutes;
+
+            return `${hours}:${minutes}`;
+        }
+
+        function getRandomNumber(){
+            return Math.floor(Math.random() * 256);
+        }
+
+        function updateChartData(chart){
+            $.get(`../api/getChartData`, function (res){
+                let labels = [];
+                res[slaves[0]][0].forEach( time => {
+                    const date = new Date(time);
+                    labels.push(timeToString(date.getHours(), date.getMinutes()));
+                });
+                chart.data.labels = labels;
+                
+                let datasets = chart.data.datasets;
+                slaves.forEach( (slave, index) => {
+                    let chartData = [];
+                    res[slave][1].forEach( data => {
+                        chartData.push(data[1]);
+                    });
+
+                    chart.data.datasets[index].data = chartData;
+                });
+
+                chart.update();
+            });
+        }
+
+        function getChartData(){
+            return new  Promise ((resolve, reject) => {
+                $.get(`../api/getChartData`, function (res) {
+                    if ( slaves[0] == undefined || res == undefined){
+                        reject();
+                    }
+                    const ctx = document.getElementById('chart_canvas').getContext('2d');
+
+                    let labels = [];
+                    res[slaves[0]][0].forEach( time => {
+                        const date = new Date(time);
+                        labels.push(timeToString(date.getHours(), date.getMinutes()));
+                    });
+
+                    let datasets = [];
+                    slaves.forEach( slave => {
+                        let chartData = [];
+                        res[slave][1].forEach( data => {
+                            chartData.push(data[1]);
+                        });
+                        color = `rgba(${getRandomNumber()}, ${getRandomNumber()}, ${getRandomNumber()}, 1)`;
+
+                        datasets.push({
+                                label: slave,
+                                data: chartData, 
+                                backgroundColor: color,
+                                borderColor: color,
+                                borderWidth: 2,
+                            })
+                    });
+                    
+                    var chart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: datasets
+                        },
+                        options: {
+                            scales: {
+                                x: {
+                                    beginAtZero: true
+                                },
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+
+                    resolve(chart);
+                });
+            })
+        }
+
+        function signIn(host) {
             message = 'PLC password: ';
             passwd = prompt(message);
 
@@ -71,42 +168,55 @@
                 url: '../api/signIn',
                 contentType: 'application/json',
                 data: JSON.stringify(payload),
-                    success: function(data) {
-                        console.log('Data received:', data);
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', error);
-                    }
+                success: function (data) {
+                    console.log('Data received:', data);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                }
             });
         }
 
-        function connectTest(){
-            
+        function connectTest() {
+
         }
 
-        function show_menu(){
+        function show_menu() {
             const menu = document.getElementById('menu');
 
             menu.classList.toggle('show');
         }
 
-        $(document).ready(function() {
-            getSlaves();
+        $(document).ready(function () {
+            getSlaves()
+                .then((recv) => {
+                    setTimeout(() => {
+                        document.getElementById('modbus').removeChild(document.getElementById('unready'));
+                    }, 5000);
 
-            setTimeout( () =>{
-                document.getElementById('modbus').removeChild(document.getElementById('unready'));
-            }, 5000);
+                    setInterval(getModbus, interval);
+
+                    getChartData()
+                        .then(chart => {
+                            setInterval(updateChartData, 100000, chart);
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        })
+                })
             
-            setInterval(getModbus, interval); 
         });
 
     </script>
+
     <div class="container">
         <div class="menu-container">
             <div class="menu" id="menu">
                 <img src="./img/logo.png" alt="Logo" class="logo">
-                <input type="button" class="menu-button current-page" disabled="true" value="Index" onclick="window.location.href = '../index';">
-                <input type="button" class="menu-button" value="Connection test" onclick="window.location.href = '../connectTest';">
+                <input type="button" class="menu-button current-page" disabled="true" value="Index"
+                    onclick="window.location.href = '../index';">
+                <input type="button" class="menu-button" value="Connection test"
+                    onclick="window.location.href = '../connectTest';">
                 <input type="button" class="menu-button" value="Log" onclick="window.location.href = '../log';">
 
             </div>
@@ -115,6 +225,7 @@
             </div>
         </div>
         <div class="data">
+            <canvas id="chart_canvas" width="400" height="200"></canvas>
             <table>
                 <thead>
                     <tr>
@@ -130,7 +241,8 @@
                     </tr>
                 </tbody>
             </table>
-        </div>  
+        </div>
     </div>
 </body>
+
 </html>

@@ -1,10 +1,82 @@
 import {exec} from 'child_process';
 import Modbus from './modbusAPI/modbus.controller.js';
 
-const slaves = {
-    '127.0.0.1:5000': new Modbus('127.0.0.1', '5000'),
-    '127.0.0.1:5030': new Modbus('127.0.0.1', '5030')
+let slaves = {};
+let slavesHistoryData = {};
+
+function getCurrentTime(time, n){
+    const currentTime = new Date(time.getTime() + n * 60000);
+
+    return currentTime;
 }
+
+function getHistoryTimeArray(){
+    const time = new Date();
+    let historyTimeArray = []
+    for ( let historyTime = -190; historyTime < 0; historyTime += 10){
+        historyTimeArray.push(getCurrentTime(time, historyTime));
+    }
+
+    return historyTimeArray;
+}
+
+function getModbusData(host){
+
+    return new Promise((resolve, reject) => {
+        if (slaves[host].isConnect) {
+
+            // modbus_request( transaction, startAddr, len, functionCode, data)
+            let promise = slaves[host].modbus_request(++tran, 0, 2, 1, [])
+                .then((recv) => {
+                    resolve([(recv[9] >> 1), (recv[9] >> 0)]);
+                })
+                .catch(err => {
+                    reject('Error in modbus_request:', err);
+                });
+        }
+        else {
+            resolve([-1, -1]);
+        }
+    })
+}
+
+function getModbusArrayData(){
+    for ( const [host, slave] of Object.entries(slaves)){
+        getModbusData(host)
+            .then((recv) => {
+                slavesHistoryData[host][0].shift();
+                slavesHistoryData[host][0].push(getCurrentTime(slavesHistoryData[host][0][slavesHistoryData[host][0].length -1], 10));
+
+                slavesHistoryData[host][1].shift();
+                slavesHistoryData[host][1].push(recv);
+
+                // console.log(host, slavesHistoryData[host][0], slavesHistoryData[host][1]);
+            })
+            .catch((err) => {
+                console.error(err);
+            })
+    }
+}
+
+setTimeout(() =>{
+    fetch("http://127.0.0.1:5020/plc_config")
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (configData) {
+            const slavesData = configData['PLCConfiguration']['DataAcquisition']['Channels']['Channel'];
+            slavesData.forEach((slave) => {
+                const historyDataInit = [getHistoryTimeArray(),[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0], [0,0], [0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]];
+                slaves[`${slave['IPAddress']}:${slave['Port']}`] = new Modbus(slave['IPAddress'], slave['Port']);
+                slavesHistoryData[`${slave['IPAddress']}:${slave['Port']}`] = historyDataInit;
+            });
+
+            getModbusArrayData();
+            setInterval(() => {
+                getModbusArrayData();
+            }, 600000)
+        });
+}, 1000);
 
 let tran = 0;
 const curr_passwd = '123456';
@@ -29,59 +101,31 @@ export default {
         });
     },
 
-    async getModbus(req, res){
+    getModbus(req, res){
         let html = '';
 
         const host = req.query.host;
-        // res.send('');
+        let plc_access = req.cookies['plc_access'];
+        const maintenance = (slavesHistoryData[host][1][slavesHistoryData[host][1].length - 1][0]);
+        const power = (slavesHistoryData[host][1][slavesHistoryData[host][1].length - 1][1]);
 
-        return new Promise((resolve, reject) => {
-            let promises = [];
-            let plc_access = req.cookies['plc_access'];
-
-
-            if (slaves[host].isConnect && plc_access != undefined && plc_access.includes(host)) {
-
-                // modbus_request( transaction, startAddr, len, functionCode, data)
-                let promise = slaves[host].modbus_request(++tran, 0, 2, 1, [])
-                    .then((recv) => {
-                        html += `<td>${host}</td>`;
-                        html += `<td>Connect</td>`;
-                        html += `<td>${(recv[9] >> 1) & 1}</td>`;
-                        html += `<td>${(recv[9] >> 0) & 1}</td>`;
-                        html += `<td><input type="button" value="maintenance on/off" onclick="setModbus('${host}', ${0x01}, ${0x01}, ${0x05}, ${!((recv[9] >> 1) & 1)})"></td>`;
-                        html += `<td><input type="button" value="power on/off" onclick="setModbus('${host}', ${0x00}, ${0x01}, ${0x05}, ${!((recv[9] >> 0) & 1)})"></td>`;
-                    })
-                    .catch(err => {
-                        console.error('Error in modbus_request:', err);
-                        html += `<td>Error: ${err.message}</td> </tr>`;
-                    });
-    
-                promises.push(promise);
-            }
-            else {
-                html += `<td>${host}</td>`;
-                html += `<td>Unconnect <input type="button" value="Sign in" onclick="signIn('${host}')"></td>`;
-
-                resolve(html);
-            }
+        // console.log(slaves[host].isConnect)
+        if (slaves[host].isConnect && plc_access != undefined && plc_access.includes(host)) {
+            html += `<td>${host}</td>`;
+            html += `<td>Connect</td>`;
+            html += `<td>${maintenance & 1}</td>`;
+            html += `<td>${power & 1}</td>`;
+            html += `<td><input type="button" value="maintenance on/off" onclick="setModbus('${host}', ${0x01}, ${0x01}, ${0x05}, ${!(maintenance & 1)})"></td>`;
+            html += `<td><input type="button" value="power on/off" onclick="setModbus('${host}', ${0x00}, ${0x01}, ${0x05}, ${!(power & 1)})"></td>`;
         
-            Promise.all(promises)
-                .then(() => {
-                    resolve(html);
-                })
-                .catch(err => {
-                    console.error('Error in processing:', err);
-                    reject(err);
-                });
-        })
-        .then(html => {
             res.send(html);
-        })
-        .catch(err => {
-            console.error('Unexpected error:', err);
-            res.status(500).send('Unexpected error occurred');
-        });
+        }
+        else{
+            // console.error('Unexpected error:', err);
+            html += `<td>${host}</td>`;
+            html += `<td>Unconnect <input type="button" value="Sign in" onclick="signIn('${host}')"></td>`;
+            res.send(html);
+        }
     },
 
     getSlaves(req, res){
@@ -91,6 +135,10 @@ export default {
         });
 
         res.send(slavesData);
+    },
+
+    getChartData(req, res){
+        res.json(slavesHistoryData);
     },
 
     signIn(req, res){

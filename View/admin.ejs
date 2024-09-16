@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connect test</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
-
 </head>
 
 <body>
@@ -31,17 +29,8 @@
     </script>
 
     <div class="container">
-        <div class="menu-container">
-            <div class="menu" id="menu">
-                <img src="./img/logo.png" alt="Logo" class="logo">
-                <input type="button" class="menu-button" value="Index" onclick="window.location.href = '../index';">
-                <input type="button" class="menu-button" value="Connection test" onclick="window.location.href = '../connectTest';">
-                <input type="button" class="menu-button current-page" value="Log" onclick="window.location.href = '../log';" disabled="true">
-            </div>
-            <div class="menu-toggle">
-                <img src="./img/point.png" alt="Menu Toggle" onclick="show_menu()">
-            </div>
-        </div>
+        <p>User: <input type="text" id="user" value=""></p>
+        <p>Password: <input type="password" id="passwd" value=""></p>
     </div>
 
 </body>

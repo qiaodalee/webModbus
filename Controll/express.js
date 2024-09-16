@@ -32,9 +32,10 @@ server.use('/connectTest', connectTest);
 
 server.use('/log', log);
 
-server.use('/', (req, res) =>{
-    res.send(`<a href="http://${config.ip}:${config.port}/index">index</a><br><br><a href="http://${config.ip}:${config.port}/connectTest">connectTest</a>`);
+server.get('/', (req, res) => {
+  res.render('admin', {title: 'admin'});
 });
+
 
 server.get('/plc_config', (req, res) => {
     const filePath = path.join(__dirname, '../hmi_conf.json');
