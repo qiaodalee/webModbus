@@ -59,14 +59,14 @@ class Modbus {
             this.modbus_write_multiple(startAddr, len, data, buffer);
         }
 
-        console.log(`\nsend req size = ${buffer.length}`);
+        console.log(`\nsend to ${this.host}:${this.port} size = ${buffer.length}`);
         this.modbus_display_msg(buffer);
 
         this.socket.write(buffer);
 
         return new Promise( (resolve, reject) =>{
             this.socket.once('data', (data) => {
-                console.log(`\nrecv res size = ${data.length}`);
+                console.log(`\nrecv from ${this.host}:${this.port} size = ${data.length}`);
                 this.modbus_display_msg(data);
     
                 resolve(data);

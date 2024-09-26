@@ -1,0 +1,61 @@
+.log-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.log-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.log-table th, .log-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.log-table th {
+    background-color: #f2f2f2;
+    color: #555;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.log-table td {
+    font-size: 14px;
+}
+
+.log-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.log-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.level {
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.level.Info {
+    color: #0056b3;
+    background-color: #cce5ff;
+}
+
+.level.Warning {
+    color: #856404;
+    background-color: #fff3cd;
+}
+
+.level.Error {
+    color: #721c24;
+    background-color: #f8d7da;
+}

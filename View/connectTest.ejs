@@ -13,20 +13,28 @@
 <body>
 
     <script>
-        function test() {
-            console.log(document.getElementById("hostInput").value);
-            $.post({
-                url: '../api/connectTest',
-                contentType: 'application/json',
-                data: JSON.stringify({ host: document.getElementById('hostInput').value }),
-                    success: function(data) {
-                        console.log('Data received:', data);
-                        document.getElementById('res').innerHTML = data;
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', error);
-                    }
-            });
+        function connect(host) {
+            return new Promise((resolve, reject) => {
+                    $.post({
+                        url: '../api/connectTest',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ 'host': host }),
+                            success: function(data) {
+                                console.log('Data received:', data);
+                                document.getElementById('res_area').innerHTML = data;
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Error:', error);
+                            }
+                    });
+            })
+            
+        }
+
+        function connectTest() {
+            host = document.getElementById("hostInput").value;
+
+            connect(host)
         }
     </script>
 
@@ -45,9 +53,11 @@
         </div>
         <div id="userInput">
             <p>Host: <input type="text" id="hostInput" value=""></p>
-            <input type="button" value="Submit" onclick="test()">
+            <input type="button" value="Submit" onclick="connectTest()">
         </div>
-        <div id="res"></div>
+        <div id="res">
+            <textarea id="res_area" name="res" rows="40" cols="100" disabled></textarea>
+        </div>
     </div>
 
 </body>

@@ -1,0 +1,56 @@
+{
+    "level": {
+        "1": "Info",
+        "2": "Warning",
+        "3": "Error"
+    },
+    
+    "eventID":{
+
+    },
+
+    "EventLogs": [
+        {
+            "level": 1,
+            "time": "2024-9-24 19:24",
+            "eventID": 1,
+            "content": "startup",
+            "ip": "127.0.0.1"
+        },
+        {
+            "level": 2,
+            "time": "2024-9-24 19:24",
+            "eventID": 1,
+            "content": "startup",
+            "ip": "127.0.0.1"
+        },
+        {
+            "level": 3,
+            "time": "2024-9-24 19:24",
+            "eventID": 1,
+            "content": "startup",
+            "ip": "127.0.0.1"
+        },
+        {
+            "level": 1,
+            "time": "2024-9-24 19:24",
+            "eventID": 1,
+            "content": "startup",
+            "ip": "127.0.0.1"
+        },
+        {
+            "level": 2,
+            "time": "2024-9-24 19:24",
+            "eventID": 1,
+            "content": "startup",
+            "ip": "127.0.0.1"
+        },
+        {
+            "level": 3,
+            "time": "2024-9-24 19:24",
+            "eventID": 1,
+            "content": "startup",
+            "ip": "127.0.0.1"
+        }
+    ]
+}

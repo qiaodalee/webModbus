@@ -7,27 +7,64 @@
     <title>Connect test</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/log.css">
 
 </head>
-
 <body>
 
     <script>
-        function test() {
-            console.log(document.getElementById("hostInput").value);
-            $.post({
-                url: '../api/connectTest',
-                contentType: 'application/json',
-                data: JSON.stringify({ host: document.getElementById('hostInput').value }),
-                    success: function(data) {
-                        console.log('Data received:', data);
-                        document.getElementById('res').innerHTML = data;
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error:', error);
+        function getLog(){
+            return new Promise((resolve, reject) => {
+                $.get(`../event_log`, function (res, err) {
+                    if (res == undefined) {
+                        reject(err);
                     }
-            });
+
+                    resolve(res);
+                });
+            })
         }
+        function setLog(){
+            getLog()
+                .then( (recv) => {
+                    document.getElementById('log').innerHTML = '';
+                    const eventLogs = recv['EventLogs'];
+                    const level = recv['level'];
+                    const eventID = recv['eventID'];
+
+                    eventLogs.forEach((eventLog) => {
+                        const new_tr = document.createElement("tr");
+                        
+                        const levelElement = document.createElement("td");
+                        levelElement.classList = "level " + level[eventLog['level']];
+                        levelElement.innerHTML = level[eventLog['level']];
+
+                        const timeElement = document.createElement("td");
+                        timeElement.innerHTML = eventLog['time'];
+
+                        const eventIDElement = document.createElement("td");
+                        eventIDElement.innerHTML = eventLog['eventID'];
+                        
+                        const contentElement = document.createElement("td");
+                        contentElement.innerHTML = eventLog['content'];
+
+                        const ipElement = document.createElement("td");
+                        ipElement.innerHTML = eventLog['ip'];
+
+                        new_tr.appendChild(levelElement);
+                        new_tr.appendChild(timeElement);
+                        new_tr.appendChild(eventIDElement);
+                        new_tr.appendChild(contentElement);
+                        new_tr.appendChild(ipElement);
+
+                        document.getElementById('log').appendChild(new_tr)
+                    });
+                });
+        }
+        setLog();
+        setInterval( () => {
+            setLog();
+        }, 6000);
     </script>
 
     <div class="container">
@@ -42,6 +79,21 @@
                 <img src="./img/point.png" alt="Menu Toggle" onclick="show_menu()">
             </div>
         </div>
+        
+        <div class="log-container">
+            <table class="log-table">
+                <thead>
+                    <th>Level</th>
+                    <th>Time</th>
+                    <th>Event ID</th>
+                    <th>Content</th>
+                    <th>IP</th>
+                </thead>
+                <tbody id="log">
+                </tbody>
+            </table>
+        </div>
+        
     </div>
 
 </body>

@@ -1,52 +1,187 @@
-/* Flex item for data section */
 .data {
-  flex: 1; /* Takes up the remaining space */
-  background-color: #f7f7f7;
-  /* padding: 200px; Optional padding */
+  flex: 1;
+  background-color: white;
   width: 80%;
-  height: 100%; /* Full height */
-  padding: 0 50px;
+  height: 100%;
+  padding: 20px 50px;
+  margin: 0 auto;
+  align-items: center;
 }
 
-/* Basic Reset */
-table {
+#chart {
   width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
-  font-size: 16px;
-  text-align: left;
+  max-width: 1000px;
+  margin: 20px auto;
 }
 
-th, td {
-  padding: 12px 15px;
-  border: 1px solid #ddd;
-}
-
-/* Header styling */
-th {
-  background-color: #f7f7f7; /* Green background */
+button {
+  background-color: #1abc9c;
   color: white;
-  font-weight: bold;
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: inline-block;
 }
 
-/* Row styling */
-tr:nth-child(even) {
-  background-color: #dedede; /* Light gray for even rows */
+button:hover {
+  background-color: #16a085;
 }
 
-tr:hover {
-  background-color: #c2c2c2; /* Darker gray for hover effect */
+button:active {
+  background-color: #149174;
 }
 
-/* Optional: add a border around the table */
-table {
-  border: 2px solid #ddd; /* Green border */
-  border-radius: 8px;
-  overflow: hidden;
+@media (max-width: 768px) {
+  .data {
+    width: 90%;
+    padding: 10px;
+  }
+
+  #chart {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  button {
+    width: 100%;
+    margin: 5px 0;
+  }
 }
 
-/* Optional: add a shadow effect */
-table {
+
+.slave-box {
+  border: 2px solid #ccc;
+  padding: 20px;
+  margin-bottom: 20px;
+  position: relative;
+  width: 1200px;
+  background-color: #f9f9f9;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 }
 
+.host {
+  background-color: #f9f9f9;
+  padding: 0 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+.login {
+  justify-content: center;
+  align-items: center;
+  background: #f9f9f9;
+  z-index: 10;
+}
+
+.login-input {
+  padding: 5px;
+  width: 120px;
+  border: 1px solid #f9f9f9;
+  border-radius: 5px;
+}
+
+.login-btn {
+  padding: 5px 10px;
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.toggle-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+
+.switch {
+  width: 50px;
+  height: 24px;
+  background-color: #ccc;
+  border-radius: 24px;
+  position: relative;
+  cursor: pointer;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background-color: white;
+  left: 3px;
+  bottom: 3px;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #4caf50;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.design_background {
+  position: relative;
+  z-index: 1;
+  width: 70%;
+  height: 70%;
+  background-image: url('../img/electric_design_in.png') ;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: left top;
+}
+
+.sign_img {
+  position: absolute;
+  top: 25%; /* 調整位置 */
+  left: 120%; /* 調整位置 */
+  transform: translate(-50%, -50%); /* 居中顯示 */
+  width: 300px; /* 根據需求調整大小 */
+  height: auto;
+}
+
+.power_1_img {
+  position: absolute;
+  top: 10%; /* 調整位置 */
+  left: 6%; /* 調整位置 */
+  transform: translate(-50%, -50%); /* 居中顯示 */
+  width: 60px; /* 根據需求調整大小 */
+  height: auto;
+}
+
+.power_2_img {
+  position: absolute;
+  top: 10%; /* 調整位置 */
+  left: 29%; /* 調整位置 */
+  transform: translate(-50%, -50%); /* 居中顯示 */
+  width: 60px; /* 根據需求調整大小 */
+  height: auto;
+}

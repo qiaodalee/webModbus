@@ -2,12 +2,25 @@ import {exec} from 'child_process';
 import Modbus from './modbusAPI/modbus.controller.js';
 
 let slaves = {};
-let slavesHistoryData = {};
+
+let slavesModbusData = {};
 
 function getCurrentTime(time, n){
     const currentTime = new Date(time.getTime() + n * 60000);
 
     return currentTime;
+}
+
+function getRandomModbusData(range, base){
+    return Math.floor(Math.random() * range)+base;
+}
+
+function getRandomModbusDataArray(size, range, base){
+    let randomModbusDataArray = [];
+    for ( let i = 0; i< size; i++){
+        randomModbusDataArray.push(getRandomModbusData(range, base));
+    }
+    return randomModbusDataArray;
 }
 
 function getHistoryTimeArray(){
@@ -20,42 +33,105 @@ function getHistoryTimeArray(){
     return historyTimeArray;
 }
 
-function getModbusData(host){
-
+function updateSlavesCurrentData(host, currentData){
     return new Promise((resolve, reject) => {
         if (slaves[host].isConnect) {
 
             // modbus_request( transaction, startAddr, len, functionCode, data)
             let promise = slaves[host].modbus_request(++tran, 0, 2, 1, [])
                 .then((recv) => {
-                    resolve([(recv[9] >> 1), (recv[9] >> 0)]);
+                    currentData['power'] = (recv[9] >> 1) & 1;
+                    currentData['maintenance'] = (recv[9] >> 0) & 1;
+                    if ( currentData['power']){
+                        currentData['rotationalSpeed'] = getRandomModbusData(1000, 2500);
+                        currentData['electricProduction'] = getRandomModbusData(1000, 2000);
+                        currentData['frequency'] = getRandomModbusData(2, 49);
+                        currentData['fuelConsumption'] = getRandomModbusData(2, 1);
+                        currentData['efficiency'] = currentData['electricProduction'] / 3000;
+                        currentData['runningTime'] = currentData['runningTime'] + 5;
+                    }
+                    else{
+                        currentData['rotationalSpeed'] = 0;
+                        currentData['electricProduction'] = 0;
+                        currentData['frequency'] = 0;
+                        currentData['fuelConsumption'] = 0;
+                        currentData['efficiency'] = 0;
+                        currentData['runningTime'] = 0;
+                    }
+                    
+                    resolve(currentData);
                 })
                 .catch(err => {
                     reject('Error in modbus_request:', err);
                 });
         }
         else {
-            resolve([-1, -1]);
+            resolve ({
+                power: 0,
+                maintenance: 0,
+                rotationalSpeed: 0,
+                electricProduction: 0,
+                frequency: 0,
+                fuelConsumption: 0,
+                efficiency: 0,
+                runningTime: 0
+            });
         }
     })
 }
 
-function getModbusArrayData(){
-    for ( const [host, slave] of Object.entries(slaves)){
-        getModbusData(host)
-            .then((recv) => {
-                slavesHistoryData[host][0].shift();
-                slavesHistoryData[host][0].push(getCurrentTime(slavesHistoryData[host][0][slavesHistoryData[host][0].length -1], 10));
+function updateSlavesHistoryData(historyDataArray, currentData){
+    historyDataArray.shift();
+    historyDataArray.push(currentData);
 
-                slavesHistoryData[host][1].shift();
-                slavesHistoryData[host][1].push(recv);
+    return historyDataArray;
+}
 
-                // console.log(host, slavesHistoryData[host][0], slavesHistoryData[host][1]);
-            })
-            .catch((err) => {
-                console.error(err);
-            })
+function updateSlavesHistoryDatas(currentData, historyDataArray){
+
+    updateSlavesHistoryData(historyDataArray['timestamp'], getCurrentTime(historyDataArray['timestamp'][historyDataArray['timestamp'].length -1], 10));
+    updateSlavesHistoryData(historyDataArray['power'], currentData['power']);
+    updateSlavesHistoryData(historyDataArray['maintenance'], currentData['maintenance']);
+    if ( currentData['power'] && !currentData['maintenance']){
+        updateSlavesHistoryData(historyDataArray['rotationalSpeed'], getRandomModbusData(1000, 2500));
+        updateSlavesHistoryData(historyDataArray['electricProduction'], getRandomModbusData(1000, 2000));
+        updateSlavesHistoryData(historyDataArray['frequency'], getRandomModbusData(2, 49));
+        updateSlavesHistoryData(historyDataArray['fuelConsumption'], getRandomModbusData(2, 1));
     }
+    else{
+        updateSlavesHistoryData(historyDataArray['rotationalSpeed'], 0);
+        updateSlavesHistoryData(historyDataArray['electricProduction'], 0);
+        updateSlavesHistoryData(historyDataArray['frequency'], 0);
+        updateSlavesHistoryData(historyDataArray['fuelConsumption'], 0);
+    }
+    
+    return historyDataArray;
+}
+
+function slavesDataInit(){
+    let init = {
+        currentData: {
+            power: 0,
+            maintenance: 0,
+            rotationalSpeed: 0,
+            electricProduction: 0,
+            frequency: 0,
+            fuelConsumption: 0,
+            efficiency: 0,
+            runningTime: 0
+        },
+        historyData: {
+            timestamp: getHistoryTimeArray(),
+            power: getRandomModbusDataArray(20, 1, 1),
+            maintenance: getRandomModbusDataArray(20, 0, 0),
+            rotationalSpeed: getRandomModbusDataArray(20, 1000, 2500),
+            electricProduction: getRandomModbusDataArray(20, 1000, 2000),
+            frequency: getRandomModbusDataArray(20, 2, 49),
+            fuelConsumption: getRandomModbusDataArray(20, 2, 1)
+        }
+        
+    };
+    return init;
 }
 
 setTimeout(() =>{
@@ -66,20 +142,31 @@ setTimeout(() =>{
         .then(function (configData) {
             const slavesData = configData['PLCConfiguration']['DataAcquisition']['Channels']['Channel'];
             slavesData.forEach((slave) => {
-                const historyDataInit = [getHistoryTimeArray(),[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0], [0,0], [0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]];
                 slaves[`${slave['IPAddress']}:${slave['Port']}`] = new Modbus(slave['IPAddress'], slave['Port']);
-                slavesHistoryData[`${slave['IPAddress']}:${slave['Port']}`] = historyDataInit;
+                slavesModbusData[`${slave['IPAddress']}:${slave['Port']}`] = slavesDataInit();
             });
 
-            getModbusArrayData();
             setInterval(() => {
-                getModbusArrayData();
-            }, 600000)
+                const currentTime = (new Date()).getTime();
+                slavesData.forEach((slave) => {
+                    const host = `${slave['IPAddress']}:${slave['Port']}`;
+                    const currentData = slavesModbusData[host]['currentData'];
+                    const historyData = slavesModbusData[host]['historyData'];
+                    updateSlavesCurrentData(host, currentData)
+                        .then(recv => {
+                            slavesModbusData[host]['currentData'] = recv;
+                        });
+                    if ( currentTime - (historyData['timestamp'][historyData['timestamp'].length - 1]) >= 600000-100){
+                        slavesModbusData[host]['historyData'] = updateSlavesHistoryDatas(currentData, historyData);
+                    }
+                });
+
+            }, 5000)
         });
 }, 1000);
 
 let tran = 0;
-const curr_passwd = '123456';
+const curr_passwd = 'ABCDEF123456';
 
 export default {
 
@@ -106,24 +193,53 @@ export default {
 
         const host = req.query.host;
         let plc_access = req.cookies['plc_access'];
-        const maintenance = (slavesHistoryData[host][1][slavesHistoryData[host][1].length - 1][0]);
-        const power = (slavesHistoryData[host][1][slavesHistoryData[host][1].length - 1][1]);
+        const currentData = slavesModbusData[host]['currentData'];
 
-        // console.log(slaves[host].isConnect)
-        if (slaves[host].isConnect && plc_access != undefined && plc_access.includes(host)) {
-            html += `<td>${host}</td>`;
-            html += `<td>Connect</td>`;
-            html += `<td>${maintenance & 1}</td>`;
-            html += `<td>${power & 1}</td>`;
-            html += `<td><input type="button" value="maintenance on/off" onclick="setModbus('${host}', ${0x01}, ${0x01}, ${0x05}, ${!(maintenance & 1)})"></td>`;
-            html += `<td><input type="button" value="power on/off" onclick="setModbus('${host}', ${0x00}, ${0x01}, ${0x05}, ${!(power & 1)})"></td>`;
+        const power = (currentData['power']);
+        const maintenance = (currentData['maintenance']);
+        const electricProduction = (currentData['electricProduction']);
+        const frequency = (currentData['frequency']);
+        const fuelConsumption = (currentData['fuelConsumption']);
+        const runningTime = (currentData['runningTime']);
+        const rotationalSpeed = currentData['rotationalSpeed'];
+        const efficiency = currentData['efficiency'];
+
+        if (plc_access != undefined && plc_access.includes(host)) {
+            console.log(power);
         
+            html += `<div class="slave-box">`;
+            html += `<div class="host">${host=="127.0.0.1:5000" ? "Electric machine 1" : "Electric machine 2"}</div>`
+            html += `<div class="toggle-group">`;
+            html += `<label class="switch">`;
+            html += `<input id="power_input" type="checkbox" ${power ? 'checked' : ''} ${maintenance == 1 ? 'disabled' : ''} onclick="setModbus('${host}', ${0x01}, ${0x01}, ${0x05}, ${!(power & 1)}, this)">`;
+            html += `<span class="slider"></span>`;
+            html += `<br><br><p id="power_status_${host}">${maintenance ? 'Maintaining' : power ? 'on' : 'off'}</p>`
+            html += `</label><br>`;
+            html += `<label>`;
+            html += `<p>electricProduction: <input type="text" disabled value="${electricProduction}"></p>`
+            html += `<p>frequency: <input type="text" disabled value="${frequency}"></p>`
+            html += `</label>`;
+            html += `<label>`;
+            html += `<p>fuelConsumption: <input type="text" disabled value="${fuelConsumption}"></p>`
+            html += `<p>runningTime: <input type="text" disabled value="${runningTime}"></p>`
+            html += `</label>`;
+            html += `<label>`;
+            html += `<p>rotationalSpeed: <input type="text" disabled value="${rotationalSpeed}"></p>`
+            html += `<p>efficiency: <input type="text" disabled value="${efficiency}"></p>`
+            html += `</label>`;
+            html += `</div>`;
+            html += `</div>`;
+
             res.send(html);
         }
         else{
-            // console.error('Unexpected error:', err);
-            html += `<td>${host}</td>`;
-            html += `<td>Unconnect <input type="button" value="Sign in" onclick="signIn('${host}')"></td>`;
+            html += `<div class="slave-box">`
+            html += `<div class="host">${host=="127.0.0.1:5000" ? "Electric machine 1" : "Electric machine 2"}</div>`
+            html += `<div class="login" id='login'>`;
+            html += `<button class="login-btn" onclick="signIn('${host}')">Login</button>`;
+            html += `</div>`;
+            html += `</div>`;
+
             res.send(html);
         }
     },
@@ -138,7 +254,7 @@ export default {
     },
 
     getChartData(req, res){
-        res.json(slavesHistoryData);
+        res.json(slavesModbusData);
     },
 
     signIn(req, res){
@@ -199,7 +315,9 @@ export default {
 
             const time = parseInt(stdout.split('/')[4]);
 
-            res.send((time < 100) ? 'Exellent' : ((time < 500) ? 'Midium' : 'Bad'));
+            res.send(stdout);
+
+            // res.send((time < 100) ? 'Exellent' : ((time < 500) ? 'Midium' : 'Bad'));
         });
     }
 };
