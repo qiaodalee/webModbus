@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="./js/controll.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/controll.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="./img/logo.png" alt="Logo">
+            <h1>Electric machine HMI 發電機人機控制介面</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../index">Index</a></li>
+                <li><a href="../connectTest">Connection test</a></li>
+                <li><a href="../log">Snort log</a></li>
+                <li><a href="../">Log out</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="data">
+        <div class="container">
+            <div class="design_background">
+                <img id="power_1" src="./img/electric_design_off.png" class="power_1_img">
+                <img id="power_2" src="./img/electric_design_off.png" class="power_2_img">
+                <img src="./img/electric_design_sign.png" class="sign_img">
+            </div>
+        </div>
+    
+        <div id="modbus" class="modbus">
+            <!-- <div class="slave-box">
+                <div class="host_container">
+                    <h2 class="host">Electric machine 1</h2>
+                    <div class="toggle-group">
+                        <label class="switch">
+                            <input id="power_input" type="checkbox" onclick="">
+                            <span class="slider"></span>
+                        </label>
+                        <span id="power_status_${host}" class="power_status">Power off</span>
+                        <span class="runningTime">runningTime</span>
+                    </div>
+                </div>
+                <div class="data-container">
+                    <div class="data-item">
+                        <span class="label">發電/效率</span>
+                        <span class="value">0</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">燃料效率</span>
+                        <span class="value">0</span>
+                    </div>  
+                </div>
+                <div class="data-container">
+                    <div class="data-item">
+                        <span class="label">轉速 x100 (rpm)</span>
+                        <div class="progress-container">
+                            <div class="ticks">
+                                <div class="tick">0</div>
+                                <div><b></b></div>
+                                <div class="tick">5</div>
+                                <div><b></b></div>
+                                <div class="tick">10</div>
+                                <div><b></b></div>
+                                <div class="tick">15</div>
+                                <div><b></b></div>
+                                <div class="tick">20</div>
+                                <div><b></b></div>
+                                <div class="tick">25</div>
+                                <div><b></b></div>
+                                <div class="tick">30</div>
+                                <div><b></b></div>
+                                <div class="tick">35</div>
+                                <div><b></b></div>
+                                <div class="tick">40</div>
+                            </div>
+                            <div class="pointer" id="pointer" style="left:60px;"></div>
+                            <div class="progress-bar"></div>
+                        </div>
+                    </div>
+                    <div class="data-item">
+                        <span class="label">頻率 (Hz)</span>
+                        <div class="progress-container">
+                            <div class="ticks">
+                                <div class="tick">0</div>
+                                <div><b></b></div>
+                                <div class="tick">10</div>
+                                <div><b></b></div>
+                                <div class="tick">20</div>
+                                <div><b></b></div>
+                                <div class="tick">30</div>
+                                <div><b></b></div>
+                                <div class="tick">40</div>
+                                <div><b></b></div>
+                                <div class="tick">50</div>
+                                <div><b></b></div>
+                                <div class="tick">60</div>
+                                <div><b></b></div>
+                                <div class="tick">70</div>
+                                <div><b></b></div>
+                                <div class="tick">80</div>
+                            </div>
+                            <div class="pointer" id="pointer"></div>
+                            <div class="progress-bar"></div>
+                        </div>
+                    </div>  
+                </div>
+            </div> -->
+        </div>
+    </div>
+</body>
+
+</html>

@@ -12,26 +12,12 @@
     <link rel="stylesheet" type="text/css" href="/css/index.css">
 </head>
 
-<body>
+<!-- <body>
     <script>
 
     </script>
 
     <div class="container">
-        <div class="menu-container">
-            <div class="menu" id="menu">
-                <img src="./img/logo.png" alt="Logo" class="logo">
-                <input type="button" class="menu-button current-page" disabled="true" value="Index"
-                    onclick="window.location.href = '../index';">
-                <input type="button" class="menu-button" value="Connection test"
-                    onclick="window.location.href = '../connectTest';">
-                <input type="button" class="menu-button" value="Log" onclick="window.location.href = '../log';">
-
-            </div>
-            <div class="menu-toggle">
-                <img src="./img/point.png" alt="Menu Toggle" onclick="show_menu()">
-            </div>
-        </div>
         <div class="data">
             <div class="design_background">
                 <img id="power_1" src="./img/electric_design_off.png" class="power_1_img">
@@ -39,21 +25,116 @@
                 <img src="./img/electric_design_sign.png" class="sign_img">
             </div>
             <div id="modbus">
-                <!-- <table>
-                    <tbody id="modbus">
-                    </tbody>
-                </table> -->
-            </div>
-            <div id="chart">
-                <canvas id="chart_canvas" width="400" height="100"></canvas>
-                <button onclick="updateCurrent('power')">power</button>
-                <button onclick="updateCurrent('fuelConsumption')">fuelConsumption</button>
-                <button onclick="updateCurrent('frequency')">frequency</button>
-                <button onclick="updateCurrent('electricProduction')">electricProduction</button>
-                <button onclick="updateCurrent('rotationalSpeed')">rotationalSpeed</button>
             </div>
         </div>
     </div>
-</body>
+</body> -->
+<body>
+    <!-- Top navigation -->
+    <header>
+        <div class="logo">
+            <img src="./img/logo.png" alt="Logo">
+            <h1>Electric machine HMI 發電機人機控制介面</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../index">Index</a></li>
+                <li><a href="../connectTest">Connection test</a></li>
+                <li><a href="../log">Snort log</a></li>
+                <li><a href="../">Log out</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+        </nav>
+    </header>
 
+    <div class="container">
+        
+        <select id="slaves" name="slaves">
+        </select>
+        <select id="display_info" name="slaves">
+            <option value='power'>電力狀態</option>
+            <option value='fuelConsumption'>燃油消耗</option>
+            <option value='frequency'>頻率</option>
+            <option value='electricProduction'>發電</option>
+            <option value='rotationalSpeed'>轉速</option>
+        </select>
+        <div class="graphs">
+            <h2>歷史數據</h2>
+            <div class="chart-graph">
+                <canvas id="chart_canvas" width="800"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>轉速 x100 (rpm)</h2>
+        <div id="tachometer">
+            <div class="ii">
+                <div><b><span class="num_1">0</span></b></div>
+                <div><b></b></div>
+                <div><b><span class="num_2">5</span></b></div>
+                <div><b></b></div>
+                <div><b><span class="num_3">10</span></b></div>
+                <div><b></b></div>
+                <div><b><span class="num_4">15</span></b></div>
+                <div><b></b></div>
+                <div><b><span class="num_5">20</span></b></div>
+                <div><b></b></div>
+                <div><b><span class="num_6">25</span></b></div>
+                <div><b></b></div>
+                <div><b><span class="num_7">30</span></b></div>
+                <div><b></b></div>
+                <div><b><span class="num_8">35</span></b></div>
+                <div><b></b></div>
+                <div><b><span class="num_9">40</span></b></div>
+            </div> 
+            <div id="redline"></div>
+            <div class="line" id="rotationalSpeed"></div>
+            <div class="pin"><div class="inner"></div></div> 
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>頻率 (Hz)</h2>
+        <div id="tachometer">
+            <div class="ii">
+                <div><b><span class="num_1">0</span></b></div>
+                <div><b></b></div>
+                <div><b><span class="num_2">10</span></b></div>
+                <div><b></b></div>
+                <div><b><span class="num_3">20</span></b></div>
+                <div><b></b></div>
+                <div><b><span class="num_4">30</span></b></div>
+                <div><b></b></div>
+                <div><b><span class="num_5">40</span></b></div>
+                <div><b></b></div>
+                <div><b><span class="num_6">50</span></b></div>
+                <div><b></b></div>
+                <div><b><span class="num_7">60</span></b></div>
+                <div><b></b></div>
+                <div><b><span class="num_8">70</span></b></div>
+                <div><b></b></div>
+                <div><b><span class="num_9">80</span></b></div>
+            </div> 
+            <div id="redline"></div>
+            <div class="line" id="frequency"></div>
+            <div class="pin"><div class="inner"></div></div> 
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>電壓</h2>
+        <p>120 V</p>
+    </div>
+
+    <div class="container">
+        <h2>電流溫度</h2>
+        <p>60 A</p>
+    </div>
+
+    <div class="container">
+        <h2>溫度</h2>
+        <p>26 °C</p>
+    </div>
+</body>
 </html>

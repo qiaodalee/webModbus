@@ -26,6 +26,7 @@
         "Channel": [
           {
             "id": 1,
+            "Name": "火力發電",
             "Type": "Analog",
             "Address": 40001,
             "IPAddress": "127.0.0.1",
@@ -35,6 +36,7 @@
           },
           {
             "id": 2,
+            "Name": "燃氣發電",
             "Type": "Analog",
             "Address": 40002,
             "IPAddress": "127.0.0.1",

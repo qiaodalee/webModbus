@@ -37,20 +37,24 @@
             connect(host)
         }
     </script>
+    <!-- Top navigation -->
+    <header>
+        <div class="logo">
+            <img src="./img/logo.png" alt="Logo">
+            <h1>Electric machine HMI 發電機人機控制介面</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../index">Index</a></li>
+                <li><a href="../connectTest">Connection test</a></li>
+                <li><a href="../log">Snort log</a></li>
+                <li><a href="../">Log out</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+        </nav>
+    </header>
 
     <div class="container">
-        <div class="menu-container">
-            <div class="menu" id="menu">
-                <img src="./img/logo.png" alt="Logo" class="logo">
-                <input type="button" class="menu-button" value="Index" onclick="window.location.href = '../index';">
-                <input type="button" class="menu-button current-page" disabled="true" value="Connection test" onclick="window.location.href = '../connectTest';">
-                <input type="button" class="menu-button" value="Log" onclick="window.location.href = '../log';">
-
-            </div>
-            <div class="menu-toggle">
-                <img src="./img/point.png" alt="Menu Toggle" onclick="show_menu()">
-            </div>
-        </div>
         <div id="userInput">
             <p>Host: <input type="text" id="hostInput" value=""></p>
             <input type="button" value="Submit" onclick="connectTest()">

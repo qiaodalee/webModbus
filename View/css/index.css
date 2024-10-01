@@ -1,187 +1,280 @@
-.data {
-  flex: 1;
-  background-color: white;
-  width: 80%;
-  height: 100%;
-  padding: 20px 50px;
-  margin: 0 auto;
-  align-items: center;
-}
-
-#chart {
-  width: 100%;
-  max-width: 1000px;
-  margin: 20px auto;
-}
-
-button {
-  background-color: #1abc9c;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  margin: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  display: inline-block;
-}
-
-button:hover {
-  background-color: #16a085;
-}
-
-button:active {
-  background-color: #149174;
-}
-
-@media (max-width: 768px) {
-  .data {
-    width: 90%;
-    padding: 10px;
-  }
-
-  #chart {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  button {
-    width: 100%;
-    margin: 5px 0;
-  }
-}
-
-
-.slave-box {
-  border: 2px solid #ccc;
+.container {
+  width: 60%;
+  height: auto;
+  /* width: auto; */
+  background-color: #fff;
   padding: 20px;
+  border-radius: 10px;
+  margin: 20px auto;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.graphs {
   margin-bottom: 20px;
-  position: relative;
-  width: 1200px;
-  background-color: #f9f9f9;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: auto;
+}
+
+.chart-graph {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: space-around;
+}
+
+.boxes {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.box {
+  width: 23%;
+  background-color: #d3d3d3;
+  padding: 10px;
+  text-align: center;
   border-radius: 8px;
 }
 
-.host {
-  background-color: #f9f9f9;
-  padding: 0 10px;
-  font-weight: bold;
-  color: #333;
+.bottom-panel {
+  text-align: center;
 }
 
-.login {
-  justify-content: center;
-  align-items: center;
-  background: #f9f9f9;
-  z-index: 10;
-}
-
-.login-input {
-  padding: 5px;
-  width: 120px;
-  border: 1px solid #f9f9f9;
-  border-radius: 5px;
-}
-
-.login-btn {
-  padding: 5px 10px;
+button {
+  padding: 10px 20px;
+  margin: 5px;
   background-color: #4caf50;
-  border: none;
   color: white;
+  border: none;
   border-radius: 5px;
-  margin-left: 5px;
   cursor: pointer;
 }
 
-.toggle-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-  padding: 5px;
+button:hover {
+  background-color: #45a049;
 }
 
 
-.switch {
-  width: 50px;
-  height: 24px;
-  background-color: #ccc;
-  border-radius: 24px;
-  position: relative;
-  cursor: pointer;
+
+#tachometer{
+  background:#171717;
+  margin:100px auto;
+  width:600px;
+  height:600px;
+  box-shadow: inset 0px 0px 9px 3px rgba(0, 0, 0, 1);
+  border: 5px solid #171717;
+  border-radius: 100%;
+  display: block;
+  position: relative;  
 }
 
-.switch input {
-  display: none;
-}
 
-.slider {
+.ii {
   position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: .4s;
-  border-radius: 24px;
+  width: 600px;
+  height: 600px;
+  z-index: 2;
+  
+}
+.ii div {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  padding:4px;
+  box-sizing: border-box;
+}
+.ii div b {
+  position: absolute;
+  display: block;
+  left: 50%;
+  width: 5px;
+  height: 20px;
+  background: #FFF;
+  margin: 0 -5px 0;
+  
+}
+.ii div:nth-child(2n+1) b {
+  width: 10px;
+  height: 35px;
+  margin: 0 -5px 0;
 }
 
-.slider:before {
-  content: "";
+.ii div:nth-child(1) {
+  transform: rotate(240deg);
+}
+.ii div:nth-child(2) {
+  transform: rotate(255deg);
+}
+.ii div:nth-child(3) {
+  transform: rotate(270deg);
+}
+.ii div:nth-child(4) {
+  transform: rotate(285deg);
+}
+.ii div:nth-child(5) {
+  transform: rotate(300deg);
+}
+.ii div:nth-child(6) {
+  transform: rotate(315deg);
+}
+.ii div:nth-child(7) {
+  transform: rotate(330deg);
+}
+.ii div:nth-child(8) {
+  transform: rotate(345deg);
+}
+.ii div:nth-child(9) {
+  transform: rotate(0deg);/*---*/
+}
+.ii div:nth-child(10) {
+  transform: rotate(15deg);
+}
+.ii div:nth-child(11) {
+  transform: rotate(30deg);
+}
+.ii div:nth-child(12) {
+  transform: rotate(45deg);
+}
+.ii div:nth-child(13) {
+  transform: rotate(60deg);
+}
+.ii div:nth-child(14) {
+  transform: rotate(75deg);
+}
+.ii div:nth-child(15) {
+  transform: rotate(90deg);
+}
+.ii div:nth-child(16) {
+  transform: rotate(105deg);
+}
+.ii div:nth-child(17) {
+  transform: rotate(120deg);
+}
+
+
+[class^="num_"] {
+  color:#FFF;
+  display: block;
   position: absolute;
-  height: 18px;
-  width: 18px;
+  width: 10px;
+  font-size:40px;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: 'Open Sans', sans-serif;
+  text-decoration:none;
+    
+}
+
+.num_1 {transform: rotate(120deg); top:20px;}
+.num_2 {transform: rotate(90deg); top:23px; left:5px}
+.num_3 {transform: rotate(60deg); top:21px;}
+.num_4 {transform: rotate(30deg); top:40px;left: -18px;}
+.num_5 {transform: rotate(0deg);  top:60px;left:-18px}
+.num_6 {transform: rotate(330deg); top:65px;left:-10px}
+.num_7 {transform: rotate(300deg); top:65px;left:-7px;}
+.num_8 {transform: rotate(270deg);top:60px;}
+.num_9 {transform: rotate(240deg);top:60px;left:18px}
+
+#redline{     
+  width:28px; 
+  height: 180px;
+  position: absolute;
+  top: 280px;
+  right: 5px;
+  border-width: 22px;
   border-radius: 50%;
-  background-color: white;
-  left: 3px;
-  bottom: 3px;
-  transition: .4s;
+  border-style: solid;
+  border-color:#171717 #F14134 #171717 #171717;
+  transform:rotate(15deg);
+  z-index:1
+  }
+
+
+.line {
+
+  
+  background: #F14134;
+  background-image: linear-gradient(to bottom, #F14134, #343536);
+  height: 0;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  width: 0;
+  transform-origin: 50% 100%;
+  margin: -285px -8px 0;
+  padding: 285px 8px 0;
+  z-index:2;
+  border-radius: 50% 50% 0 0;    
+  transform:rotate(-95deg);
+  
+  
+  /* animation: pendulum;
+  animation-iteration-count: infinite;
+  animation-duration: 4s; */
+
+      
 }
 
-input:checked + .slider {
-  background-color: #4caf50;
+.pin {
+  width: 50px;
+  height: 50px;
+  left:50%;
+  top:50%;
+  margin: -25px 0 0 -25px;
+  background-color: #343536;
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: 0 8px 15px 0 rgba(0, 0, 0, 0.5);
+  background-image: linear-gradient(to bottom, #F14134, #343536);
+  z-index: 4;
 }
 
-input:checked + .slider:before {
-  transform: translateX(26px);
-}
 
-.design_background {
+.inner {
+  width: 30px;
+  height: 30px;
+  margin: 10px auto 0;
+  background-color: #343536;
+  border-radius: 100%;
+  box-shadow: inset 0 8px 15px 0 rgba(167, 23, 10, 0.4);
   position: relative;
-  z-index: 1;
-  width: 70%;
-  height: 70%;
-  background-image: url('../img/electric_design_in.png') ;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-position: left top;
 }
 
-.sign_img {
-  position: absolute;
-  top: 25%; /* 調整位置 */
-  left: 120%; /* 調整位置 */
-  transform: translate(-50%, -50%); /* 居中顯示 */
-  width: 300px; /* 根據需求調整大小 */
-  height: auto;
-}
 
-.power_1_img {
-  position: absolute;
-  top: 10%; /* 調整位置 */
-  left: 6%; /* 調整位置 */
-  transform: translate(-50%, -50%); /* 居中顯示 */
-  width: 60px; /* 根據需求調整大小 */
-  height: auto;
-}
 
-.power_2_img {
-  position: absolute;
-  top: 10%; /* 調整位置 */
-  left: 29%; /* 調整位置 */
-  transform: translate(-50%, -50%); /* 居中顯示 */
-  width: 60px; /* 根據需求調整大小 */
-  height: auto;
+@keyframes pendulum {
+  10% {
+      transform:rotate(100deg);
+  }
+
+ 
+  11% {
+      transform:rotate(98deg);
+  }
+  12% {
+      transform:rotate(96deg);
+  }
+  13% {
+      transform:rotate(98deg);
+  }
+  14% {
+      transform:rotate(96deg);
+  }
+  15% {
+      transform:rotate(98deg);
+  }
+  16% {
+      transform:rotate(96deg);
+  }
+  17% {
+      transform:rotate(98deg);
+  }
+  18% {
+      transform:rotate(96deg);
+  }
+  19% {
+      transform:rotate(98deg);
+  }
+  
+
+ 
 }

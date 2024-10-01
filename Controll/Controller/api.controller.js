@@ -1,9 +1,11 @@
 import {exec} from 'child_process';
 import Modbus from './modbusAPI/modbus.controller.js';
+import config from '../../config.js';
 
 let slaves = {};
-
 let slavesModbusData = {};
+let slavesName = {};
+let plc_config = {};
 
 function getCurrentTime(time, n){
     const currentTime = new Date(time.getTime() + n * 60000);
@@ -46,7 +48,7 @@ function updateSlavesCurrentData(host, currentData){
                         currentData['rotationalSpeed'] = getRandomModbusData(1000, 2500);
                         currentData['electricProduction'] = getRandomModbusData(1000, 2000);
                         currentData['frequency'] = getRandomModbusData(2, 49);
-                        currentData['fuelConsumption'] = getRandomModbusData(2, 1);
+                        currentData['fuelConsumption'] = getRandomModbusData(30, 70);
                         currentData['efficiency'] = currentData['electricProduction'] / 3000;
                         currentData['runningTime'] = currentData['runningTime'] + 5;
                     }
@@ -134,8 +136,9 @@ function slavesDataInit(){
     return init;
 }
 
-setTimeout(() =>{
-    fetch("http://127.0.0.1:5020/plc_config")
+function getPlcConfig() {
+    return new Promise ( (resolve, rejects) => {
+        fetch(`http://${config.ip}:${config.port}/plc_config`)
         .then(function (response) {
             return response.json();
         })
@@ -144,6 +147,7 @@ setTimeout(() =>{
             slavesData.forEach((slave) => {
                 slaves[`${slave['IPAddress']}:${slave['Port']}`] = new Modbus(slave['IPAddress'], slave['Port']);
                 slavesModbusData[`${slave['IPAddress']}:${slave['Port']}`] = slavesDataInit();
+                slavesName[`${slave['IPAddress']}:${slave['Port']}`] = slave['Name'];
             });
 
             setInterval(() => {
@@ -161,8 +165,26 @@ setTimeout(() =>{
                     }
                 });
 
-            }, 5000)
+            }, configData['PLCConfiguration']['DataAcquisition']['PollingInterval']);
+
+            resolve(configData);
         });
+    })
+}
+
+function init(){
+    getPlcConfig()
+        .then( (configData) => {
+            plc_config = configData;
+        })
+        .catch( (err) => {
+            console.error(err);
+            init();
+        })
+}
+
+setTimeout(() =>{
+    init();
 }, 1000);
 
 let tran = 0;
@@ -204,40 +226,116 @@ export default {
         const rotationalSpeed = currentData['rotationalSpeed'];
         const efficiency = currentData['efficiency'];
 
+        console.log(frequency)
+
         if (plc_access != undefined && plc_access.includes(host)) {
-            console.log(power);
-        
-            html += `<div class="slave-box">`;
-            html += `<div class="host">${host=="127.0.0.1:5000" ? "Electric machine 1" : "Electric machine 2"}</div>`
-            html += `<div class="toggle-group">`;
-            html += `<label class="switch">`;
-            html += `<input id="power_input" type="checkbox" ${power ? 'checked' : ''} ${maintenance == 1 ? 'disabled' : ''} onclick="setModbus('${host}', ${0x01}, ${0x01}, ${0x05}, ${!(power & 1)}, this)">`;
-            html += `<span class="slider"></span>`;
-            html += `<br><br><p id="power_status_${host}">${maintenance ? 'Maintaining' : power ? 'on' : 'off'}</p>`
-            html += `</label><br>`;
-            html += `<label>`;
-            html += `<p>electricProduction: <input type="text" disabled value="${electricProduction}"></p>`
-            html += `<p>frequency: <input type="text" disabled value="${frequency}"></p>`
-            html += `</label>`;
-            html += `<label>`;
-            html += `<p>fuelConsumption: <input type="text" disabled value="${fuelConsumption}"></p>`
-            html += `<p>runningTime: <input type="text" disabled value="${runningTime}"></p>`
-            html += `</label>`;
-            html += `<label>`;
-            html += `<p>rotationalSpeed: <input type="text" disabled value="${rotationalSpeed}"></p>`
-            html += `<p>efficiency: <input type="text" disabled value="${efficiency}"></p>`
-            html += `</label>`;
-            html += `</div>`;
-            html += `</div>`;
+            // let runningTime = 60000;
+            // console.log(`${runningTime/=3600}h ${runningTime/=60}m ${runningTime}s`);
+
+            html += `<div class="host_container">
+                            <h2 class="host">${slavesName[host]}</h2>
+                            <div class="toggle-group">
+                                <label class="switch">
+                                    <input id="power_input" type="checkbox" ${power ? 'checked' : ''} ${maintenance == 1 ? 'disabled' : ''} onclick="setModbus('${host}', ${0x01}, ${0x01}, ${0x05}, ${!(power & 1)}, this)">
+                                    <span class="slider"></span>
+                                </label>
+                                <span id="power_status_${host}" value="${power}" class="power_status">${maintenance ? 'Maintaining' : power ? 'Power on' : 'Power off'}</span>
+                                <span class="runningTime" value=${runningTime}>運作時間: ${Math.floor(runningTime/3600)}h ${Math.floor((runningTime%3600)/60)}m ${Math.floor(runningTime%60)}s</span>
+                            </div>
+                        </div>
+                        <div class="data-container">
+                            <div class="data-item">
+                                <span class="label">發電 / 效率</span>
+                                <span class="value">${electricProduction}Wh / ${Math.floor(efficiency*100)}%</span>
+                            </div>
+                            <div class="data-item">
+                                <span class="label">燃料效率</span>
+                                <span class="value">${fuelConsumption}%</span>
+                            </div>  
+                        </div>
+                        <div class="data-container">
+                            <div class="data-item">
+                                <span class="label">轉速 x100 (rpm)</span>
+                                <div class="progress-container">
+                                    <div class="ticks">
+                                        <div class="tick">0</div>
+                                        <div><b></b></div>
+                                        <div class="tick">5</div>
+                                        <div><b></b></div>
+                                        <div class="tick">10</div>
+                                        <div><b></b></div>
+                                        <div class="tick">15</div>
+                                        <div><b></b></div>
+                                        <div class="tick">20</div>
+                                        <div><b></b></div>
+                                        <div class="tick">25</div>
+                                        <div><b></b></div>
+                                        <div class="tick">30</div>
+                                        <div><b></b></div>
+                                        <div class="tick">35</div>
+                                        <div><b></b></div>
+                                        <div class="tick">40</div>
+                                    </div>
+                                    <div class="progress-bar"></div>
+                                    <div class="pointer" id="pointer" style="left:${(rotationalSpeed / 40)}%;"></div>
+                                </div>
+                            </div>
+                            <div class="data-item">
+                                <span class="label">頻率 (Hz)</span>
+                                <div class="progress-container">
+                                    <div class="ticks">
+                                        <div class="tick">0</div>
+                                        <div><b></b></div>
+                                        <div class="tick">10</div>
+                                        <div><b></b></div>
+                                        <div class="tick">20</div>
+                                        <div><b></b></div>
+                                        <div class="tick">30</div>
+                                        <div><b></b></div>
+                                        <div class="tick">40</div>
+                                        <div><b></b></div>
+                                        <div class="tick">50</div>
+                                        <div><b></b></div>
+                                        <div class="tick">60</div>
+                                        <div><b></b></div>
+                                        <div class="tick">70</div>
+                                        <div><b></b></div>
+                                        <div class="tick">80</div>
+                                    </div>
+                                    <div class="progress-bar"></div>
+                                    <div class="pointer" id="pointer" style="left:${(frequency / 0.8)}%;"></div>
+                                </div>
+                            </div>  
+                        </div>`;
+
+            // html += `<h2 class="host">${host=="127.0.0.1:5000" ? "Electric machine 1" : "Electric machine 2"}</h2>`
+            // html += `<div class="toggle-group">`;
+            // html += `<label class="switch">`;
+            // html += `<input id="power_input" type="checkbox" ${power ? 'checked' : ''} ${maintenance == 1 ? 'disabled' : ''} onclick="setModbus('${host}', ${0x01}, ${0x01}, ${0x05}, ${!(power & 1)}, this)">`;
+            // html += `<span class="slider"></span>`;
+            // html += `<br><br><p id="power_status_${host}">${maintenance ? 'Maintaining' : power ? 'on' : 'off'}</p>`
+            // html += `</label><br>`;
+            // html += `<label>`;
+            // html += `<p>electricProduction: <input type="text" disabled value="${electricProduction}"></p>`
+            // html += `<p>frequency: <input type="text" disabled value="${frequency}"></p>`
+            // html += `</label>`;
+            // html += `<label>`;
+            // html += `<p>fuelConsumption: <input type="text" disabled value="${fuelConsumption}"></p>`
+            // html += `<p>runningTime: <input type="text" disabled value="${runningTime}"></p>`
+            // html += `</label>`;
+            // html += `<label>`;
+            // html += `<p>rotationalSpeed: <input type="text" disabled value="${rotationalSpeed}"></p>`
+            // html += `<p>efficiency: <input type="text" disabled value="${efficiency}"></p>`
+            // html += `</label>`;
+            // html += `</div>`;
 
             res.send(html);
         }
         else{
-            html += `<div class="slave-box">`
-            html += `<div class="host">${host=="127.0.0.1:5000" ? "Electric machine 1" : "Electric machine 2"}</div>`
+            html += `<div class="host">${slavesName[host]}</div>`
             html += `<div class="login" id='login'>`;
             html += `<button class="login-btn" onclick="signIn('${host}')">Login</button>`;
-            html += `</div>`;
+            html += `<span id="power_status_${host}" value="${power}" class="power_status" hidden="true"></span>`;
             html += `</div>`;
 
             res.send(html);
@@ -245,9 +343,9 @@ export default {
     },
 
     getSlaves(req, res){
-        let slavesData = [];
-        Object.keys(slaves).forEach(slave =>{
-            slavesData.push(slave);
+        let slavesData = {};
+        Object.keys(slaves).forEach((slave) =>{
+            slavesData[slave]= slavesName[slave];
         });
 
         res.send(slavesData);

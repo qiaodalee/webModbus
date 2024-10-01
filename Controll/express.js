@@ -27,6 +27,10 @@ server.use('/js', express.static(path.join(__dirname, '../View/js')));
 
 server.use('/index', index);
 
+server.use('/controll', (req, res) => {
+  res.render('controll');
+});
+
 server.use('/api', api);
 
 server.use('/connectTest', connectTest);
@@ -34,7 +38,7 @@ server.use('/connectTest', connectTest);
 server.use('/log', log);
 
 server.get('/', (req, res) => {
-  res.render('admin', { title: 'admin' });
+    res.render('index', {title: 'Home'});
 });
 
 
