@@ -39,6 +39,7 @@
         <nav>
             <ul>
                 <li><a href="../index">Index</a></li>
+                <li><a href="../controll">Controll</a></li>
                 <li><a href="../connectTest">Connection test</a></li>
                 <li><a href="../log">Snort log</a></li>
                 <li><a href="../">Log out</a></li>
@@ -47,94 +48,101 @@
         </nav>
     </header>
 
-    <div class="container">
-        
-        <select id="slaves" name="slaves">
-        </select>
-        <select id="display_info" name="slaves">
-            <option value='power'>電力狀態</option>
-            <option value='fuelConsumption'>燃油消耗</option>
-            <option value='frequency'>頻率</option>
-            <option value='electricProduction'>發電</option>
-            <option value='rotationalSpeed'>轉速</option>
-        </select>
-        <div class="graphs">
-            <h2>歷史數據</h2>
-            <div class="chart-graph">
-                <canvas id="chart_canvas" width="800"></canvas>
+    <div class="container-all">
+        <div class="container-left">
+            <select id="slaves" name="slaves" class="slavesList"></select>
+            <div class="container">
+                <div class="graphs">
+                    <div class="graphs-title">
+                        <h2>歷史數據</h2>
+                        <select id="display_info" name="slaves" class="slavesList">
+                            <option value='power'>電力狀態</option>
+                            <option value='fuelConsumption'>燃油消耗</option>
+                            <option value='frequency'>頻率</option>
+                            <option value='electricProduction'>發電</option>
+                            <option value='rotationalSpeed'>轉速</option>
+                        </select>
+                    </div>
+                    <div class="chart-graph">
+                        <canvas id="chart_canvas" width="800" height="330"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="info">
+                <div class="container-info">
+                    <h2>電壓</h2>
+                    <p>120 V</p>
+                </div>
+    
+                <div class="container-info">
+                    <h2>電流溫度</h2>
+                    <p>60 A</p>
+                </div>
+    
+                <div class="container-info">
+                    <h2>溫度</h2>
+                    <p>26 °C</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="container">
-        <h2>轉速 x100 (rpm)</h2>
-        <div id="tachometer">
-            <div class="ii">
-                <div><b><span class="num_1">0</span></b></div>
-                <div><b></b></div>
-                <div><b><span class="num_2">5</span></b></div>
-                <div><b></b></div>
-                <div><b><span class="num_3">10</span></b></div>
-                <div><b></b></div>
-                <div><b><span class="num_4">15</span></b></div>
-                <div><b></b></div>
-                <div><b><span class="num_5">20</span></b></div>
-                <div><b></b></div>
-                <div><b><span class="num_6">25</span></b></div>
-                <div><b></b></div>
-                <div><b><span class="num_7">30</span></b></div>
-                <div><b></b></div>
-                <div><b><span class="num_8">35</span></b></div>
-                <div><b></b></div>
-                <div><b><span class="num_9">40</span></b></div>
-            </div> 
-            <div id="redline"></div>
-            <div class="line" id="rotationalSpeed"></div>
-            <div class="pin"><div class="inner"></div></div> 
+        <div class="container-right">
+            <div class="container">
+                <h2>轉速 x100 (rpm)</h2>
+                <div id="tachometer">
+                    <div class="ii">
+                        <div><b><span class="num_1">0</span></b></div>
+                        <div><b></b></div>
+                        <div><b><span class="num_2">5</span></b></div>
+                        <div><b></b></div>
+                        <div><b><span class="num_3">10</span></b></div>
+                        <div><b></b></div>
+                        <div><b><span class="num_4">15</span></b></div>
+                        <div><b></b></div>
+                        <div><b><span class="num_5">20</span></b></div>
+                        <div><b></b></div>
+                        <div><b><span class="num_6">25</span></b></div>
+                        <div><b></b></div>
+                        <div><b><span class="num_7">30</span></b></div>
+                        <div><b></b></div>
+                        <div><b><span class="num_8">35</span></b></div>
+                        <div><b></b></div>
+                        <div><b><span class="num_9">40</span></b></div>
+                    </div> 
+                    <div id="redline"></div>
+                    <div class="line" id="rotationalSpeed"></div>
+                    <div class="pin"><div class="inner"></div></div> 
+                </div>
+            </div>
+
+            <div class="container">
+                <h2>頻率 (Hz)</h2>
+                <div id="tachometer">
+                    <div class="ii">
+                        <div><b><span class="num_1">0</span></b></div>
+                        <div><b></b></div>
+                        <div><b><span class="num_2">10</span></b></div>
+                        <div><b></b></div>
+                        <div><b><span class="num_3">20</span></b></div>
+                        <div><b></b></div>
+                        <div><b><span class="num_4">30</span></b></div>
+                        <div><b></b></div>
+                        <div><b><span class="num_5">40</span></b></div>
+                        <div><b></b></div>
+                        <div><b><span class="num_6">50</span></b></div>
+                        <div><b></b></div>
+                        <div><b><span class="num_7">60</span></b></div>
+                        <div><b></b></div>
+                        <div><b><span class="num_8">70</span></b></div>
+                        <div><b></b></div>
+                        <div><b><span class="num_9">80</span></b></div>
+                    </div> 
+                    <div id="redline"></div>
+                    <div class="line" id="frequency"></div>
+                    <div class="pin"><div class="inner"></div></div> 
+                </div>
+            </div>
         </div>
-    </div>
-
-    <div class="container">
-        <h2>頻率 (Hz)</h2>
-        <div id="tachometer">
-            <div class="ii">
-                <div><b><span class="num_1">0</span></b></div>
-                <div><b></b></div>
-                <div><b><span class="num_2">10</span></b></div>
-                <div><b></b></div>
-                <div><b><span class="num_3">20</span></b></div>
-                <div><b></b></div>
-                <div><b><span class="num_4">30</span></b></div>
-                <div><b></b></div>
-                <div><b><span class="num_5">40</span></b></div>
-                <div><b></b></div>
-                <div><b><span class="num_6">50</span></b></div>
-                <div><b></b></div>
-                <div><b><span class="num_7">60</span></b></div>
-                <div><b></b></div>
-                <div><b><span class="num_8">70</span></b></div>
-                <div><b></b></div>
-                <div><b><span class="num_9">80</span></b></div>
-            </div> 
-            <div id="redline"></div>
-            <div class="line" id="frequency"></div>
-            <div class="pin"><div class="inner"></div></div> 
-        </div>
-    </div>
-
-    <div class="container">
-        <h2>電壓</h2>
-        <p>120 V</p>
-    </div>
-
-    <div class="container">
-        <h2>電流溫度</h2>
-        <p>60 A</p>
-    </div>
-
-    <div class="container">
-        <h2>溫度</h2>
-        <p>26 °C</p>
     </div>
 </body>
 </html>

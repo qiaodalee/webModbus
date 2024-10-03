@@ -17,4 +17,6 @@ router.post('/connectTest', api.connectTest);
 
 router.get('/getChartData', api.getChartData);
 
+router.post('/admin', api.admin);
+
 export default router;

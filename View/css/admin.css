@@ -1,0 +1,101 @@
+/* Container Styling */
+.container {
+    width: 300px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+}
+
+/* Paragraph Styling */
+.container p {
+    margin: 15px 0;
+}
+
+/* Input Field Styling */
+.container input[type="text"],
+.container input[type="password"] {
+    width: calc(100% - 10px);
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Button Styling */
+.container input[type="button"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.container input[type="button"]:hover {
+    background-color: #45a049;
+}
+
+/* Adjustments for "See Password" Button */
+#passwd + input[type="button"] {
+    margin-left: 10px;
+    padding: 10px 15px;
+    background-color: #007BFF;
+    border-radius: 4px;
+    color: white;
+}
+
+#passwd + input[type="button"]:hover {
+    background-color: #0056b3;
+}
+
+.eye-icon {
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 16px;
+    vertical-align: middle;
+}
+
+/* Adjust the container and inputs for better alignment */
+.container p {
+    display: flex;
+    align-items: center;
+}
+
+.container input[type="password"] {
+    flex: 1;
+}
+
+h1 {
+    font-family: 'Arial', sans-serif;
+    font-size: 72px;
+    font-weight: bold;
+    text-align: center;
+    color: #009f00;
+    text-shadow: 1px 1px 0 #ccc, 2px 2px 0 #bbb, 3px 3px 0 #aaa, 4px 4px 0 #999, 5px 5px 0 #888;
+}
+
+
+/* Responsive Design */
+@media (max-width: 500px) {
+    .container {
+        width: 100%;
+        padding: 15px;
+    }
+}
+
+body {
+    background-image: url('../img/admin.webp');
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* background-color: ; */
+}

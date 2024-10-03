@@ -3,10 +3,7 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
-import index from './Router/index.route.js';
 import api from './Router/api.route.js';
-import connectTest from './Router/connectTest.route.js';
-import log from './Router/log.route.js';
 
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename); // get the name of the directory
@@ -25,20 +22,38 @@ server.use('/css', express.static(path.join(__dirname, '../View/css')));
 
 server.use('/js', express.static(path.join(__dirname, '../View/js')));
 
-server.use('/index', index);
+server.use('/index', (req, res) => {
+  if (req.cookies.isAdmin)
+    res.render('index', { title: 'Home' });
+  else
+    res.redirect('../');
+});
 
 server.use('/controll', (req, res) => {
-  res.render('controll');
+  if (req.cookies.isAdmin)
+    res.render('controll');
+  else
+    res.redirect('../');
 });
 
 server.use('/api', api);
 
-server.use('/connectTest', connectTest);
+server.use('/connectTest', (req, res) => {
+  if (req.cookies.isAdmin)
+    res.render('connectTest');
+  else
+    res.redirect('../');
+});
 
-server.use('/log', log);
+server.use('/log', (req, res) => {
+  if (req.cookies.isAdmin)
+    res.render('log');
+  else
+    res.redirect('../');
+});
 
 server.get('/', (req, res) => {
-    res.render('index', {title: 'Home'});
+  res.render('admin', { title: 'Home' });
 });
 
 

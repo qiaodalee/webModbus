@@ -4,35 +4,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connect test</title>
+    <title>HMI admin</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/admin.css">
 </head>
 
 <body>
 
     <script>
-        function test() {
-            console.log(document.getElementById("hostInput").value);
+        function admin() {
             $.post({
-                url: '../api/connectTest',
+                url: '../api/admin',
                 contentType: 'application/json',
-                data: JSON.stringify({ host: document.getElementById('hostInput').value }),
+                data: JSON.stringify({ user: document.getElementById('user').value , passwd: document.getElementById('passwd').value}),
                     success: function(data) {
-                        console.log('Data received:', data);
-                        document.getElementById('res').innerHTML = data;
+                        if (data['COUNT(*)'] > 0){
+                            window.location.href = "./index";
+                        }
+                        else{
+                            alert('使用者名稱或密碼錯誤！');
+                        }
                     },
                     error: function(xhr, status, error) {
                         console.error('Error:', error);
                     }
             });
         }
+
+        $(document).ready(() => {
+            document.getElementById('togglePassword').addEventListener('click', () => {
+                if ( document.getElementById('passwd').type == 'password'){
+                    document.getElementById('passwd').type = 'text';
+                }
+                else{
+                    document.getElementById('passwd').type = 'password';
+                }
+            })
+
+            document.getElementById('adminButton').addEventListener('click', admin);
+            document.getElementById('adminButton').addEventListener('keypress', function(e){
+                if (e.keyCode === 'Enter'){
+                    admin();
+                }
+            });
+        })
     </script>
+    <div class="background">
+        <h1>CDX Power Grid Workstation</h1>
 
-    <div class="container">
-        <p>User: <input type="text" id="user" value=""></p>
-        <p>Password: <input type="password" id="passwd" value=""></p>
+        <div class="container">
+            <p>User&nbsp;&nbsp;<input type="text" id="user" value=""></p>
+            <p>Password&nbsp;&nbsp;   
+                <input type="password" id="passwd" value="">
+                <span id="togglePassword" class="eye-icon">&#128065;</span>
+            </p>
+            <input type="button" value="admin" id="adminButton">
+        </div>
     </div>
-
 </body>
 
 </html>

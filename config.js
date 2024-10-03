@@ -1,12 +1,11 @@
 const config = {
-	port : '5020',
-	ip : '127.0.0.1',
+	port : '8080',
+	ip : '0.0.0.0',
 	host: 'localhost',
     user: 'root',
-    password: 'rootroot',
-    database:'device',
-    dbport: 3306,
-    homeMasterIP: '10.103.151.2:1880'
+    password: 'PowerGrid0000!',
+    database:'PowerGridScada',
+    dbport: 3306
 };
 
 export default config;

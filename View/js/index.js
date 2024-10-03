@@ -52,7 +52,7 @@ function updateChartData(chart) {
             const current_info = document.getElementById('display_info').value;
 
             slavesModbusData = recv;
-            console.log(slavesModbusData)
+            // console.log(slavesModbusData)
             let angle = (slavesModbusData[current_plc]['currentData']['rotationalSpeed'] / 100) * 240 - 120;
             document.getElementById('rotationalSpeed').style.transform = `rotate(${angle}deg)`
 
@@ -67,7 +67,7 @@ function updateChartData(chart) {
             });
             chart.data.labels = labels;
 
-            chart.data.datasets[0].label = current_plc;
+            chart.data.datasets[0].label = document.getElementById('slaves').options[document.getElementById('slaves').selectedIndex].innerHTML;
             chart.data.datasets[0].data = slavesModbusData[current_plc]['historyData'][current_info];
 
             chart.update();
@@ -89,21 +89,9 @@ function getChartData() {
     })
 }
 
-// getChartData()
-//         .then(recv => {
-//             slavesModbusData = recv;
-//             console.log('1')
-//         })
-//         .catch(err => {
-//             console.error(err);
-//         })
-
 $(document).ready(function () {
     getSlaves()
         .then((recv) => {
-            // getModbus();
-
-            // setInterval(getModbus, interval);
             const ctx = document.getElementById('chart_canvas').getContext('2d');
             chart = new Chart(ctx, {
                 type: 'line',

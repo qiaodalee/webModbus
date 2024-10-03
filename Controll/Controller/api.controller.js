@@ -1,6 +1,8 @@
 import {exec} from 'child_process';
+import { createHash } from 'crypto';
 import Modbus from './modbusAPI/modbus.controller.js';
 import config from '../../config.js';
+import sql from '../../Model/sql.js';
 
 let slaves = {};
 let slavesModbusData = {};
@@ -308,26 +310,6 @@ export default {
                             </div>  
                         </div>`;
 
-            // html += `<h2 class="host">${host=="127.0.0.1:5000" ? "Electric machine 1" : "Electric machine 2"}</h2>`
-            // html += `<div class="toggle-group">`;
-            // html += `<label class="switch">`;
-            // html += `<input id="power_input" type="checkbox" ${power ? 'checked' : ''} ${maintenance == 1 ? 'disabled' : ''} onclick="setModbus('${host}', ${0x01}, ${0x01}, ${0x05}, ${!(power & 1)}, this)">`;
-            // html += `<span class="slider"></span>`;
-            // html += `<br><br><p id="power_status_${host}">${maintenance ? 'Maintaining' : power ? 'on' : 'off'}</p>`
-            // html += `</label><br>`;
-            // html += `<label>`;
-            // html += `<p>electricProduction: <input type="text" disabled value="${electricProduction}"></p>`
-            // html += `<p>frequency: <input type="text" disabled value="${frequency}"></p>`
-            // html += `</label>`;
-            // html += `<label>`;
-            // html += `<p>fuelConsumption: <input type="text" disabled value="${fuelConsumption}"></p>`
-            // html += `<p>runningTime: <input type="text" disabled value="${runningTime}"></p>`
-            // html += `</label>`;
-            // html += `<label>`;
-            // html += `<p>rotationalSpeed: <input type="text" disabled value="${rotationalSpeed}"></p>`
-            // html += `<p>efficiency: <input type="text" disabled value="${efficiency}"></p>`
-            // html += `</label>`;
-            // html += `</div>`;
 
             res.send(html);
         }
@@ -417,6 +399,25 @@ export default {
 
             // res.send((time < 100) ? 'Exellent' : ((time < 500) ? 'Midium' : 'Bad'));
         });
+    },
+
+    admin(req, res) {
+        const user = req.body['user'];
+        const passwd = createHash('sha256').update(req.body['passwd']).digest('hex');
+
+        /* sql */
+        sql.query(`SELECT COUNT(*) FROM Admin WHERE User='${user}' AND Passwd='${passwd}';`)
+            .then((sqlRes) => {
+                // console.log(sqlRes[0]['COUNT(*)']);
+                // console.log(typeof(sqlRes[0]['COUNT(*)'])); 
+                if ( sqlRes[0]['COUNT(*)'] > 0)
+                    res.cookie('isAdmin', true, {maxAge: 24 * 60 * 60 * 1000});
+                res.status(200).send(sqlRes[0]);
+
+            })
+            .catch((err) => {
+                res.status(400).send(false);
+            })
     }
 };
 
