@@ -19,4 +19,6 @@ router.get('/getChartData', api.getChartData);
 
 router.post('/admin', api.admin);
 
+router.get('/getPower', api.getPower);
+
 export default router;

@@ -65,12 +65,13 @@ function updateChartData(chart) {
                 const date = new Date(time);
                 labels.push(timeToString(date.getHours(), date.getMinutes()));
             });
-            chart.data.labels = labels;
+            chart.data.labels = labels.slice(-20);
 
             chart.data.datasets[0].label = document.getElementById('slaves').options[document.getElementById('slaves').selectedIndex].innerHTML;
-            chart.data.datasets[0].data = slavesModbusData[current_plc]['historyData'][current_info];
+            chart.data.datasets[0].data = slavesModbusData[current_plc]['historyData'][current_info].slice(-20);
 
             chart.update();
+            console.log(slavesModbusData[current_plc]['historyData'][current_info].slice(-20));
         })
         .catch(err => {
             console.error(err);

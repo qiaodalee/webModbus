@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mail</title>
+    <link rel="stylesheet" type="text/css" href="Mail_files/style.css">
+    <link rel="stylesheet" type="text/css" href="Mail_files/mail.css">
+    <script src="Mail_files/jquery.min.js"></script>
+<script>
+        function view(buttonEvent) {
+            buttonEvent.nextElementSibling.style.display = buttonEvent.nextElementSibling.style.display.length == 0 ? 'block' : ''
+            buttonEvent.value = buttonEvent.value == '隱藏' ? '檢視' : '隱藏';
+        }
+
+        function sendEmail() {
+            console.log(document.getElementById("emailAddressInput").value);
+            setTimeout(()=>{}, 10000);
+            $.post({
+                url: '../api/sendMailToUser',
+                contentType: 'application/json',
+                data: JSON.stringify({ emailAddressInput: document.getElementById('emailAddressInput').value }),
+                    success: function(data) {
+                        console.log('Data received:', data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+            });
+        }
+    </script></head>
+
+
+    
+
+<body>
+    <!-- Top navigation -->
+    <header>
+        <div class="logo">
+            <img src="Mail_files/logo.png" alt="Logo">
+            <h1>solar energy scada</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Overview</a></li>
+                <li><a href="#">Daily Data</a></li>
+                <li><a href="#">Inverter Info</a></li>
+                <li><a href="#">Historical Data</a></li>
+                <li><a href="#">Settings</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main content -->
+    <div class="content">
+        <aside class="sidebar">
+            <ul>
+                <li onclick="window.location.href='./index'">Index</li>
+                <li onclick="window.location.href='./mail'">Mail</li>
+                <li>Monitor &amp; Controll</li>
+            </ul>
+        </aside>
+
+        <main>
+
+            <!-- Graph and Image Section -->
+            <section class="data-visuals">
+                <p>Email test: <input type="text" id="emailAddressInput"></p>
+                <input type="button" value="Test" onclick="sendEmail()">
+            </section>
+
+            <section class="warning-container">
+                <h2>警告規則</h2>
+                <div class="warning-rule">
+                    <h3>儲能電池容量不足</h3>
+                    <p>目標郵件: u10906218@ms.ttu.edu.tw</p>
+                    <input type="button" value="刪除" disabled="disabled" style="hover: none">
+                    <input type="button" value="編輯">
+                    <input type="button" value="檢視" onclick="view(this)">
+                    <div class="popup-info">
+                        <h3>儲能電池容量不足</h3>
+                        <p>當儲能電池容量 &gt; 90%，發送警報信件</p>
+                    </div>
+                </div>
+                <div class="warning-rule">
+                    <h3>儲能電池電量不足</h3>
+                    <p>目標郵件: u10906218@ms.ttu.edu.tw</p>
+                    <input type="button" value="刪除" disabled="disabled">
+                    <input type="button" value="編輯">
+                    <input type="button" value="檢視" onclick="view(this)">
+                    <div class="popup-info">
+                        <h3>儲能電池電量不足</h3>
+                        <p>當儲能電池電量 &lt; 8%，發送警報信件</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    
+
+</body></html>

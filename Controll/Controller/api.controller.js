@@ -30,7 +30,7 @@ function getRandomModbusDataArray(size, range, base){
 function getHistoryTimeArray(){
     const time = new Date();
     let historyTimeArray = []
-    for ( let historyTime = -190; historyTime < 0; historyTime += 10){
+    for ( let historyTime = -1800; historyTime < 0; historyTime += 1){
         historyTimeArray.push(getCurrentTime(time, historyTime));
     }
 
@@ -85,7 +85,7 @@ function updateSlavesCurrentData(host, currentData){
 }
 
 function updateSlavesHistoryData(historyDataArray, currentData){
-    historyDataArray.shift();
+    // historyDataArray.shift();
     historyDataArray.push(currentData);
 
     return historyDataArray;
@@ -93,7 +93,7 @@ function updateSlavesHistoryData(historyDataArray, currentData){
 
 function updateSlavesHistoryDatas(currentData, historyDataArray){
 
-    updateSlavesHistoryData(historyDataArray['timestamp'], getCurrentTime(historyDataArray['timestamp'][historyDataArray['timestamp'].length -1], 10));
+    updateSlavesHistoryData(historyDataArray['timestamp'], getCurrentTime(historyDataArray['timestamp'][historyDataArray['timestamp'].length -1], 1));
     updateSlavesHistoryData(historyDataArray['power'], currentData['power']);
     updateSlavesHistoryData(historyDataArray['maintenance'], currentData['maintenance']);
     if ( currentData['power'] && !currentData['maintenance']){
@@ -126,12 +126,12 @@ function slavesDataInit(){
         },
         historyData: {
             timestamp: getHistoryTimeArray(),
-            power: getRandomModbusDataArray(20, 1, 1),
-            maintenance: getRandomModbusDataArray(20, 0, 0),
-            rotationalSpeed: getRandomModbusDataArray(20, 1000, 2500),
-            electricProduction: getRandomModbusDataArray(20, 1000, 2000),
-            frequency: getRandomModbusDataArray(20, 2, 49),
-            fuelConsumption: getRandomModbusDataArray(20, 2, 1)
+            power: getRandomModbusDataArray(1800, 1, 1),
+            maintenance: getRandomModbusDataArray(1800, 0, 0),
+            rotationalSpeed: getRandomModbusDataArray(1800, 1000, 2500),
+            electricProduction: getRandomModbusDataArray(1800, 1000, 2000),
+            frequency: getRandomModbusDataArray(1800, 2, 49),
+            fuelConsumption: getRandomModbusDataArray(1800, 2, 1)
         }
         
     };
@@ -162,7 +162,7 @@ function getPlcConfig() {
                         .then(recv => {
                             slavesModbusData[host]['currentData'] = recv;
                         });
-                    if ( currentTime - (historyData['timestamp'][historyData['timestamp'].length - 1]) >= 600000-100){
+                    if ( currentTime - (historyData['timestamp'][historyData['timestamp'].length - 1]) >= 60000-100){
                         slavesModbusData[host]['historyData'] = updateSlavesHistoryDatas(currentData, historyData);
                     }
                 });
@@ -335,6 +335,13 @@ export default {
 
     getChartData(req, res){
         res.json(slavesModbusData);
+    },
+
+    getPower(req, res) {
+        let slavesData = {};
+        Object.keys(slaves).forEach((slave) =>{
+            slavesData[slavesName[slave]]= slavesModbusData[slave]['currentData']['power'];
+        });
     },
 
     signIn(req, res){
