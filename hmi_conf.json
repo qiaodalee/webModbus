@@ -26,21 +26,21 @@
         "Channel": [
           {
             "id": 1,
-            "Name": "火力發電機",
+            "Name": "火力發電系統",
             "Type": "Analog",
             "Address": 40001,
-            "IPAddress": "127.0.0.1",
-            "Port": 5000,
+            "IPAddress": "10.103.152.4",
+            "Port": 501,
             "Description": "",
             "Unit": ""
           },
           {
             "id": 2,
-            "Name": "燃氣發電機",
+            "Name": "燃氣發電系統",
             "Type": "Analog",
             "Address": 40002,
-            "IPAddress": "127.0.0.1",
-            "Port": 5030,
+            "IPAddress": "10.103.152.14",
+            "Port": 501,
             "Description": "",
             "Unit": ""
           }

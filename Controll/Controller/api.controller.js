@@ -149,7 +149,7 @@ function getPlcConfig() {
             slavesData.forEach((slave) => {
                 slaves[`${slave['IPAddress']}:${slave['Port']}`] = new Modbus(slave['IPAddress'], slave['Port']);
                 slavesModbusData[`${slave['IPAddress']}:${slave['Port']}`] = slavesDataInit();
-                slavesName[`${slave['IPAddress']}:${slave['Port']}`] = slave['Name'];
+                slavesName[`${slave['IPAddress']}:${slave['Port']}`] = `${slave['Name']} ( ${slave['IPAddress']} )`;
             });
 
             setInterval(() => {
@@ -190,7 +190,7 @@ setTimeout(() =>{
 }, 1000);
 
 let tran = 0;
-const curr_passwd = 'ABCDEF123456';
+const curr_passwd = 'cdx@electric';
 
 export default {
 
@@ -228,11 +228,7 @@ export default {
         const rotationalSpeed = currentData['rotationalSpeed'];
         const efficiency = currentData['efficiency'];
 
-        console.log(frequency)
-
         if (plc_access != undefined && plc_access.includes(host)) {
-            // let runningTime = 60000;
-            // console.log(`${runningTime/=3600}h ${runningTime/=60}m ${runningTime}s`);
 
             html += `<div class="host_container">
                             <h2 class="host">${slavesName[host]}</h2>

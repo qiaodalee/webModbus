@@ -311,7 +311,7 @@ button:hover {
 
 .slavesList {
   margin: 10px 0 0 10px;
-  width: 200px; /* Set width as needed */
+  width: 60%; /* Set width as needed */
   padding: 10px; /* Add padding for better touch target */
   border-radius: 5px; /* Rounded corners */
   border: 1px solid #ccc; /* Light gray border */
